@@ -20,24 +20,38 @@ $(document).ready(function () {
     var findUserKey = "";
     var emailPassword = false;
     var APIKEY = "8B9NyQks1iiVdMZV";
+    var artist = "";
 
-    $.ajax({
-        url: "https://api.songkick.com/api/3.0/search/artists.json?apikey=" + APIKEY + "&query=Radiohead",
-        method: "GET"
-    }).then(function (response) {
-        //var results = response.data;
-        console.log(response.resultsPage.results.artist[0].displayName);
-        var results = response.resultsPage.results.artist;
+    $("#submit").off();
+    $("#submit").on("click", function (event) {
+        event.preventDefault();
 
-        for (var i = 0; i < results.length; i++) {
-            console.log(results[i].displayName + " " + results[i].uri);
+        artist = $("#inputUser").val().trim();
 
-            $("#events").append("<li><a href=" + results[i].uri + ">" + results[i].displayName + "</a></li>");
-        };
+        //https://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={your_api_key}
 
+        $.ajax({
+            url: "https://api.songkick.com/api/3.0/search/artists.json?apikey=" + APIKEY + "&query=" + artist,
+            method: "GET"
+        }).then(function (response) {
+            var results = response.resultsPage.results.artist;
+            var artistID = results[0].id;
+            //var results = response.data;
+            console.log(response);
+            console.log(response.resultsPage.results.artist[0].displayName);
+            console.log(artistID);
 
+            $("#events").append("<li><a href=" + results[0].uri + ">" + results[0].displayName + "</a></li>");
+
+            $.ajax({
+                url: "https://api.songkick.com/api/3.0/artists/" + artistID + "/calendar.json?apikey=" + APIKEY,
+                method: "GET"
+            }).then(function (responsetwo) {
+                console.log(responsetwo);
+            });
+        });
+        $("#inputUser").val("");
     });
-
 
     $("#signUpLink").off();
     $("#signUpLink").on("click", function (event) {
@@ -71,12 +85,6 @@ $(document).ready(function () {
     $("#signOutLink").on("click", function (event) {
         event.preventDefault();
         window.location.href = "landingpage.html";
-    });
-
-    $("#submit").off();
-    $("#submit").on("click", function (event) {
-        event.preventDefault();
-        $("#print").text("Hello there!");
     });
 
     $("#signUp").off();
