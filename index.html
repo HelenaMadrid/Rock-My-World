@@ -61,7 +61,35 @@
 
         <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery.js"></script>
     </div>
+
+    <div id="events"></div>
+<script>
+    var APIKEY = "8B9NyQks1iiVdMZV";
+ 
+  $(document).ready(function() {
+  
+    $.ajax({
+            url: "https://api.songkick.com/api/3.0/search/artists.json?apikey="+APIKEY+"&query=Radiohead",
+            method: "GET"
+        }).then(function (response) {
+            //var results = response.data;
+            console.log(response.resultsPage.results.artist[0].displayName);
+            var results = response.resultsPage.results.artist;
+
+            for (var i = 0; i < results.length; i++) {
+                console.log(results[i].displayName + " " + results[i].uri);
+
+                $("#events").append("<li><a href=" + results[i].uri + ">" + results[i].displayName + "</a></li>");
+            };
+
+    
+        });
+
+  });
+</script>
+
 </body>
 
 </html>
