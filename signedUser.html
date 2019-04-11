@@ -4,11 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Signed User</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css">-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -21,27 +21,28 @@
 
 </head>
 
-<body>
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-4">Rock My World</h1>
-            <p class="lead">Get all the information about concerts here.</p>
-        </div>
-    </div>
-    <div class="container">
-        <form>
+<body class="text-center">
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand text-white">Navbar</a>
+        <form class="form-inline">
+            <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signOutLink">Sign Out</button>
+        </form>
+    </nav>
+
+    <div class="container noNavBar align-middle">
+
+
+        <form hidden>
             <input type="text" placeholder="Artist, Band or Location">
             <input id="submit" type="submit">
         </form>
         <div id="print"></div>
-        <br>
-        <form>
-            <input id="signOut" type="submit" value="Sign Out">
-        </form>
-        
+
+
+
+
 
         <script src="javascript.js"></script>
-
         <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </div>
