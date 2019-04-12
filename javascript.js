@@ -21,17 +21,37 @@ $(document).ready(function () {
     var emailPassword = false;
     var APIKEY = "8B9NyQks1iiVdMZV";
     var artist = "";
+    var artist2 = "";
+    var artistfinal = "";
 
-    $("#submit").off();
-    $("#submit").on("click", function (event) {
+    $(".submit").off();
+    $(".submit").on("click", function (event) {
         event.preventDefault();
-
+        $(".containerSearch").attr("hidden", "true");
+        
+        var urlAPI="https://api.songkick.com/api/3.0/search/artists.json?apikey=" + APIKEY + "&query=";
+        
+        artist2 = $("#inputUserNav").val().trim();
         artist = $("#inputUser").val().trim();
+        
+        console.log("artist " + artist);
+        console.log(artist2);
 
         //https://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={your_api_key}
+        
+        if(artist2===""){
+            artistfinal=artist;
+            
+        }
+        if(artist===""){
+            artistfinal=artist2;
+        
+        }
+        
 
         $.ajax({
-            url: "https://api.songkick.com/api/3.0/search/artists.json?apikey=" + APIKEY + "&query=" + artist,
+            
+            url: urlAPI + artistfinal,
             method: "GET"
         }).then(function (response) {
             var results = response.resultsPage.results.artist;
@@ -41,13 +61,42 @@ $(document).ready(function () {
             console.log(response.resultsPage.results.artist[0].displayName);
             console.log(artistID);
 
-            $("#events").append("<li><a href=" + results[0].uri + ">" + results[0].displayName + "</a></li>");
-
             $.ajax({
                 url: "https://api.songkick.com/api/3.0/artists/" + artistID + "/calendar.json?apikey=" + APIKEY,
                 method: "GET"
             }).then(function (responsetwo) {
                 console.log(responsetwo);
+                //$("#events").append("<li><a href=" + results[0].uri + ">" + results[0].displayName + "</a></li>");
+                for (var x = 0; x < 11; x++) {
+                    var responseShort = responsetwo.resultsPage.results.event[0];
+                    var container = $("#events");
+                    var imageConcert = $("<img>");
+                    var eventName = $("<p>");
+                    var venueName = $("<p>");
+                    var location = $("<p>");
+                    var dateTime = $("<p>");
+
+                    container.addClass("border border-white");
+
+
+                    var eventNameExtracted = responseShort.displayName;
+                    var venueNameExtracted = responseShort.venue.displayName;
+                    var locationExtracted = responseShort.location.city + " " + responseShort.venue.metroArea.displayName;
+                    var dateTimeExtracted = responseShort.start.date + " " + " " + responseShort.start.time;
+
+                    //$("#events").append(container);
+                    container.append(imageConcert);
+                    container.append(eventName);
+                    container.append(venueName);
+                    container.append(location);
+                    container.append(dateTime);
+
+                    eventName.text(eventNameExtracted);
+                    venueName.text(venueNameExtracted);
+                    location.text(locationExtracted);
+                    dateTime.text(dateTimeExtracted);
+                }
+
             });
         });
         $("#inputUser").val("");
@@ -59,11 +108,13 @@ $(document).ready(function () {
         if ($(".form-signin").attr("hidden") === "hidden") {
             $(".form-signup").removeAttr("hidden");
             $(".search").attr("hidden", "true");
+            $(".containerSearch").attr("hidden", "true");
         }
         else {
             $(".form-signin").attr("hidden", "true");
             $(".search").attr("hidden", "true");
             $(".form-signup").removeAttr("hidden");
+            $(".containerSearch").attr("hidden", "true");
         }
     });
 
@@ -73,11 +124,13 @@ $(document).ready(function () {
         if ($(".form-signup").attr("hidden") === "hidden") {
             $(".form-signin").removeAttr("hidden");
             $(".search").attr("hidden", "true");
+            $(".containerSearch").attr("hidden", "true");
         }
         else {
             $(".form-signup").attr("hidden", "true");
             $(".search").attr("hidden", "true");
             $(".form-signin").removeAttr("hidden");
+            $(".containerSearch").attr("hidden", "true");
 
         }
     });
@@ -125,11 +178,6 @@ $(document).ready(function () {
                 var keys = childSnapshot.key;
                 findUserKey = keys;
                 console.log("key " + keys);
-                //passwordDatabase = passwordDatabaseLocal;
-                //emailPassword = true;
-                //console.log("match!");
-                //console.log(emailInput + " is the same as " + emailDatabase);
-                // $("#messageSignIn").text("This email is registered in our database");
                 $("#messageSignIn").text("This email is registered in our database");
                 console.log(emailInput + " is the same as " + emailDatabaseLocal);
                 console.log(passwordInput + " is the same as " + passwordDatabaseLocal);
@@ -140,28 +188,10 @@ $(document).ready(function () {
                 console.log(emailInput + " is not the same as " + emailDatabaseLocal);
                 console.log(passwordInput + " is not the same as " + passwordDatabaseLocal);
             }
-            //else{
-            //    console.log("Not a match!");
-            //   console.log(emailInput+" is not the same as "+emailDatabase);
-            //    $("#messageSignIn").text("Sorry, this email is not registered in our database, please sign up");
-            //}
-
-            //dos ideas: switch, o exists de firebase
 
             $("#emailSI").val("");
             $("#passwordSI").val("");
 
-            //  switch (emailPassword) {
-            //    case true:
-            //      $("#messageSignIn").text("This email is registered in our database");
-            //    console.log(emailInput + " is the same as " + emailDatabase);
-            //  console.log(passwordInput + " is the same as " + passwordDatabase);
-
-            // break;
-            //default:
-            //  $("#messageSignIn").text("Sorry, this email is not registered in our database, please sign up");
-            // console.log(emailInput + " is not the same as " + emailDatabase);
-            // }
 
         })
 

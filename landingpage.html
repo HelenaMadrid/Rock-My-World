@@ -25,10 +25,13 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand text-white border border-info px-3" href="landingpage.html">Rock My World</a>
         <form class="form-inline">
+            <input type="text" class="mx-4" placeholder="Artist, Bands">
+            <input type="submit" class="submit" id="inputUserNav">
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signUpLink">Sign Up</button>
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="signInLink">Sign In</button>
         </form>
     </nav>
+    <div id="events" class="container text-white" ></div>
     <div class="container noNavBar align-middle">
         <!--<div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -73,26 +76,23 @@
             <div id="messageSignIn" class="text-white"></div>
         </form>
 
-        <div class="container">
+        <div class="container containerSearch">
             <h1 class="text-white"><strong>Rock My World</strong></h1>
-            <h2 class="text-white">Welcome to <em>Rock My World</em> where you can check the concert dates of your favorite artists and bands! Search by Location or by Artist.</h2>
+            <h2 class="text-white">Welcome to <em>Rock My World</em> where you can check the concert dates of your
+                favorite artists and bands! Search by Location or by Artist.</h2>
             <form class="search">
                 <input type="text" placeholder="Artist, Band or Location" id="inputUser">
-                <input id="submit" type="submit" class="btn btn-lg btn-primary btn-block my-2">
-                <div id="events"></div>
+                <input type="submit" class="btn btn-lg btn-primary btn-block my-2 submit">
             </form>
 
         </div>
-
-
-
-
-
 
         <script src="javascript.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </div>
+
+    
 </body>
 
 </html>
