@@ -20,6 +20,7 @@ $(document).ready(function () {
     var findUserKey = "";
     var emailPassword = false;
     var APIKEY = "8B9NyQks1iiVdMZV";
+    var APIKEYTicketmaster = "Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts";
     var artist = "";
     var artist2 = "";
     var artistfinal = "";
@@ -28,34 +29,35 @@ $(document).ready(function () {
     $(".submit").on("click", function (event) {
         event.preventDefault();
         $(".containerSearch").attr("hidden", "true");
-        
-        var urlAPI="https://api.songkick.com/api/3.0/search/artists.json?apikey=" + APIKEY + "&query=";
-        
-        artist2 = $("#inputUserNav").val().trim();
+
+        var urlAPI = "https://api.songkick.com/api/3.0/search/artists.json?apikey=" + APIKEY + "&query=";
+
+        //artist2 = $("#inputUserNav").val().trim();
         artist = $("#inputUser").val().trim();
-        
+
         console.log("artist " + artist);
         console.log(artist2);
 
         //https://api.songkick.com/api/3.0/artists/{artist_id}/calendar.json?apikey={your_api_key}
-        
-        if(artist2===""){
-            artistfinal=artist;
-            
+
+        if (artist2 === "") {
+            artistfinal = artist;
+
         }
-        if(artist===""){
-            artistfinal=artist2;
-        
+        if (artist === "") {
+            artistfinal = artist2;
+
         }
-        
+
 
         $.ajax({
-            
+
             url: urlAPI + artistfinal,
             method: "GET"
         }).then(function (response) {
             var results = response.resultsPage.results.artist;
             var artistID = results[0].id;
+
             //var results = response.data;
             console.log(response);
             console.log(response.resultsPage.results.artist[0].displayName);
@@ -66,37 +68,61 @@ $(document).ready(function () {
                 method: "GET"
             }).then(function (responsetwo) {
                 console.log(responsetwo);
-                //$("#events").append("<li><a href=" + results[0].uri + ">" + results[0].displayName + "</a></li>");
-                for (var x = 0; x < 11; x++) {
-                    var responseShort = responsetwo.resultsPage.results.event[0];
-                    var container = $("#events");
-                    var imageConcert = $("<img>");
-                    var eventName = $("<p>");
-                    var venueName = $("<p>");
-                    var location = $("<p>");
-                    var dateTime = $("<p>");
 
-                    container.addClass("border border-white");
+                $.ajax({
+                    type: "GET",
+                    url: "https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts&keyword=" + artistfinal,
+                }).then(function (response3) {
+                    console.log(response3);
+                    var ticketmasterArtistId = response3._embedded.attractions[0].id;
+                    console.log(ticketmasterArtistId);
+
+                    $.ajax({
+                        type: "GET",
+                        url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts&attractionId=" + ticketmasterArtistId,
+                    }).then(function (response7) {
+                        console.log(response7);
 
 
-                    var eventNameExtracted = responseShort.displayName;
-                    var venueNameExtracted = responseShort.venue.displayName;
-                    var locationExtracted = responseShort.location.city + " " + responseShort.venue.metroArea.displayName;
-                    var dateTimeExtracted = responseShort.start.date + " " + " " + responseShort.start.time;
+                        $.ajax({
+                            type: "GET",
+                            url: "https://app.ticketmaster.com/discovery/v2/events/" + ticketmasterArtistId + ".json?apikey=Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts",
 
-                    //$("#events").append(container);
-                    container.append(imageConcert);
-                    container.append(eventName);
-                    container.append(venueName);
-                    container.append(location);
-                    container.append(dateTime);
+                        }).then(function (response4) {
+                            console.log(response4);
+                            //$("#events").append("<li><a href=" + results[0].uri + ">" + results[0].displayName + "</a></li>");
+                            for (var x = 0; x < 10; x++) {
+                                var responseShort = responsetwo.resultsPage.results.event[x];
+                                var container = $("#events");
+                                var imageConcert = $("<img>");
+                                var eventName = $("<p>");
+                                var venueName = $("<p>");
+                                var location = $("<p>");
+                                var dateTime = $("<p>");
 
-                    eventName.text(eventNameExtracted);
-                    venueName.text(venueNameExtracted);
-                    location.text(locationExtracted);
-                    dateTime.text(dateTimeExtracted);
-                }
+                                container.addClass("border border-white");
 
+
+                                var eventNameExtracted = responseShort.displayName;
+                                var venueNameExtracted = responseShort.venue.displayName;
+                                var locationExtracted = responseShort.location.city + " " + responseShort.venue.metroArea.displayName;
+                                var dateTimeExtracted = responseShort.start.date + " " + " " + responseShort.start.time;
+
+                                //$("#events").append(container);
+                                container.append(imageConcert);
+                                container.append(eventName);
+                                container.append(venueName);
+                                container.append(location);
+                                container.append(dateTime);
+
+                                eventName.text(eventNameExtracted);
+                                venueName.text(venueNameExtracted);
+                                location.text(locationExtracted);
+                                dateTime.text(dateTimeExtracted);
+                            }
+                        });
+                    });
+                });
             });
         });
         $("#inputUser").val("");
