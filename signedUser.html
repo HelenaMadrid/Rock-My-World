@@ -19,7 +19,6 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 
-
 </head>
 
 <body class="text-center">
@@ -29,24 +28,11 @@
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signOutLink">Sign Out</button>
         </form>
     </nav>
-    <div class="row" hidden>
-        <div w-type="event-discovery" w-tmapikey="Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts"
-            w-googleapikey="AIzaSyDqRHzyXNbaPh3xIcwixY_LgRTX6pdeNW0" w-keyword="concert" w-theme="simple"
-            w-colorscheme="light" w-width="300" w-height="250" w-size="25" w-border="0" w-borderradius="4"
-            w-postalcode="" w-radius="25" w-city="" w-period="custom" w-layout="vertical" w-attractionid=""
-            w-promoterid="" w-venueid="" w-affiliateid="" w-segmentid="" w-proportion="m" w-titlelink="off"
-            w-sorting="groupByName" w-id="id_h2uyke" w-countrycode="US" w-source="ticketmaster"
-            w-startdatetime="2019-04-13" w-enddatetime="2019-12-31" w-latlong=""></div>
-        <script
-            src="https://ticketmaster-api-staging.github.io/products-and-docs/widgets/event-discovery/1.0.0/lib/main-widget.js"></script>
-    </div>
-
-    <div class="row ">
-        <div class="col-xl-1"></div>
-        <div class="container noNavBar align-middle col-xl-4">
-            <div class="row">
-                    <div class="col-xl-1"></div>
-                <div class="container containerSearch col-xl-8">
+    <div class="container-fluid">
+        <div id="events" class="container text-white"></div>
+        <div class="row noNavBar">
+            <div class="container containerSearch col-xl-9">
+                <div class="container float-right col-xl-8">
                     <h1 class="text-white"><strong>Rock My World</strong></h1>
                     <h2 class="text-white">Welcome to <em>Rock My World</em> where you can check the concert dates of
                         your
@@ -57,10 +43,26 @@
                     </form>
                 </div>
             </div>
+            <div class="container col-xl-3">
+                <iframe src="https://open.spotify.com/embed/user/spotify/playlist/37i9dQZEVXcFEwr1U48Mnq" width="300"
+                    height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            </div>
         </div>
-        <iframe class="col-xl-3" src=https://open.spotify.com/embed/user/spotify/playlist/37i9dQZEVXcFEwr1U48Mnq"
-            width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+
+
+        <div class="row" hidden>
+            <div w-type="event-discovery" w-tmapikey="Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts"
+                w-googleapikey="AIzaSyDqRHzyXNbaPh3xIcwixY_LgRTX6pdeNW0" w-keyword="concert" w-theme="simple"
+                w-colorscheme="light" w-width="300" w-height="250" w-size="25" w-border="0" w-borderradius="4"
+                w-postalcode="" w-radius="25" w-city="" w-period="custom" w-layout="vertical" w-attractionid=""
+                w-promoterid="" w-venueid="" w-affiliateid="" w-segmentid="" w-proportion="m" w-titlelink="off"
+                w-sorting="groupByName" w-id="id_h2uyke" w-countrycode="US" w-source="ticketmaster"
+                w-startdatetime="2019-04-13" w-enddatetime="2019-12-31" w-latlong=""></div>
+            <script
+                src="https://ticketmaster-api-staging.github.io/products-and-docs/widgets/event-discovery/1.0.0/lib/main-widget.js"></script>
+        </div>
     </div>
+
     <script src="javascript.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

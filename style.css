@@ -8,16 +8,9 @@ body{
     background-color: black;
     background-size: 100%;
     
+    
 }
-.noNavBar{
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-align: center;
-    align-items: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    /*height: 80%;*/ 
-}
+
 
 .navbar{
     background-image: url("placeholder.jpg");
@@ -25,17 +18,17 @@ body{
     background-size: 100%;
     
 }
+.noNavBar{
+  padding-top: 20%;
+}
 
-/*.jumbotron{
-    background-image: url("placeholder.jpg");
-    background-color: black;
-    background-size: 100%;
-}*/
-/*h1{
-    font-size: 500%;
-}*/
+.search{
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
 
-.search,
 #inputUser,
 .form-signup,
 .form-signin {
@@ -43,6 +36,7 @@ body{
   max-width: 330px;
   padding: 15px;
   margin: auto;
+  margin-top: 15%;
 }
 .form-signup .checkbox,
 .form-signin .checkbox {
