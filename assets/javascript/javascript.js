@@ -25,6 +25,55 @@ $(document).ready(function () {
     var artist2 = "";
     var artistfinal = "";
 
+
+    function printEvents(results, y, container) {
+        var row = $("<div>");
+        var eventInfo = $("<div>");
+        var extraInfoButton=$("<button>");
+        var imageConcert = $("<img>");
+        var eventName = $("<p>");
+        var venueName = $("<p>");
+        var location = $("<p>");
+        var dateTime = $("<p>");
+        eventId = results[y].id;
+        console.log(eventId);
+
+        imageConcert.addClass("col-xl-2 p-4");
+        row.addClass("row text-center border border-white my-2");
+        row.attr("value", eventId);
+        eventInfo.addClass("col-xl-8 text-center p-2");
+        extraInfoButton.addClass("btn btn-outline-light col-xl-2");
+        extraInfoButton.attr({"value": eventId, "style": "height:50px; width:30px"});
+
+        var eventNameExtracted = results[y].name;
+        var venueNameExtracted = results[y]._embedded.venues[0].name;
+        var locationExtracted = results[y]._embedded.venues[0].city.name + ", " + results[y]._embedded.venues[0].state.name;
+        var dateTimeExtracted = results[y].dates.start.localDate + " " + results[y].dates.start.localTime;
+        var imageConcertExtracted = results[y].images[2].url;
+
+        console.log(results[y].dates);
+        console.log(results[y].dates.start);
+        console.log(results[y].dates.localTime);
+
+        container.append(row);
+
+        row.append(imageConcert);
+        row.append(eventInfo);
+        row.append(extraInfoButton);
+
+        eventInfo.append(eventName);
+        eventInfo.append(venueName);
+        eventInfo.append(location);
+        eventInfo.append(dateTime);
+
+        imageConcert.attr({ "src": imageConcertExtracted, "style": "height:171px; width:240px;" });
+
+        eventName.html("<h3>" + eventNameExtracted + "</h3>");
+        venueName.text(venueNameExtracted);
+        location.text(locationExtracted);
+        dateTime.text(dateTimeExtracted);
+        extraInfoButton.text("More information");
+    }
     $(".submit").off();
     $(".submit").on("click", function (event) {
         event.preventDefault();
@@ -35,13 +84,10 @@ $(document).ready(function () {
         console.log(artist2);
         if (artist2 === "") {
             artistfinal = artist;
-
         }
         if (artist === "") {
             artistfinal = artist2;
-
         }
-
         //Now that we have the artistId, we look in events for all the events that have the artistid, this is to ensure that no cover bands to not show in the search. So here we find the eventID. We are limiting the results for 10 events.
         $.ajax({
             type: "GET",
@@ -52,88 +98,16 @@ $(document).ready(function () {
                 console.log(response);
                 var results = response._embedded.events;
                 var container = $("#events");
-                container.addClass("border border-white container");
+                container.addClass("container");
 
                 if (results.length < 10) {
-
                     for (var y = 0; y < results.length; y++) {
-                        var imageConcert = $("<img>");
-                        var eventName = $("<p>");
-                        var venueName = $("<p>");
-                        var location = $("<p>");
-                        var dateTime = $("<p>");
-                        eventId = results[y].id;
-                        console.log(eventId);
-
-                        imageConcert.addClass("col-xl-1");
-
-                        var eventNameExtracted = results[y].name;
-                        var venueNameExtracted = results[y]._embedded.venues[0].name;
-                        var locationExtracted = results[y]._embedded.venues[0].city.name + ", " + results[y]._embedded.venues[0].state.name;
-                        var dateTimeExtracted = results[y].dates.start.localData + " " + results[y].dates.start.LocalTime;
-                        var imageConcertExtracted = results[y].images[2].url;
-                        //var dateTimeExtracted = results[y].dates.start.localData;
-
-
-                        container.append(imageConcert);
-                        container.append(eventName);
-                        container.append(venueName);
-                        container.append(location);
-                        container.append(dateTime);
-
-                        imageConcert.attr("src", imageConcertExtracted);
-                        eventName.text(eventNameExtracted);
-                        venueName.text(venueNameExtracted);
-                        location.text(locationExtracted);
-                        dateTime.text(dateTimeExtracted);
+                        printEvents(results, y, container);
                     }
-
                 }
                 else {
                     for (var y = 0; y < 10; y++) {
-                        var row = $("<div>");
-                        var eventInfo=$("<div>");
-                        var imageConcert = $("<img>");
-                        var eventName = $("<p>");
-                        var venueName = $("<p>");
-                        var location = $("<p>");
-                        var dateTime = $("<p>");
-                        eventId = results[y].id;
-                        console.log(eventId);
-
-                        imageConcert.addClass("col-xl-2 p-4");
-                        row.addClass("row text-center");
-                        eventInfo.addClass("col-xl-10 text-center p-4")
-
-                        var eventNameExtracted = results[y].name;
-                        var venueNameExtracted = results[y]._embedded.venues[0].name;
-                        var locationExtracted = results[y]._embedded.venues[0].city.name + ", " + results[y]._embedded.venues[0].state.name;
-                        var dateTimeExtracted = results[y].dates.start.localDate + " " + results[y].dates.start.localTime;
-                        var imageConcertExtracted = results[y].images[2].url;
-                        //var dateTimeExtracted = results[y].dates.start.localDate;
-                        console.log(results[y].dates);
-                        console.log(results[y].dates.start);
-                        console.log(results[y].dates.localTime);
-                        
-
-                        container.append(row);
-                        
-                        row.append(imageConcert);
-                        row.append(eventInfo);
-
-                        eventInfo.append(eventName);
-                        eventInfo.append(venueName);
-                        eventInfo.append(location);
-                        eventInfo.append(dateTime);
-
-                        imageConcert.attr({"src":imageConcertExtracted, "style": "height:171px; width:240px;"});
-                        
-                
-                        eventName.html("<h3>"+eventNameExtracted+"</h3>");
-                        venueName.text(venueNameExtracted);
-                        location.text(locationExtracted);
-                        dateTime.text(dateTimeExtracted);
-
+                        printEvents(results, y, container);
                     }
                 }
             },
@@ -152,12 +126,14 @@ $(document).ready(function () {
             $(".form-signup").removeAttr("hidden");
             $(".search").attr("hidden", "true");
             $(".containerSearch").attr("hidden", "true");
+            $("#events").attr("hidden", "true");
         }
         else {
             $(".form-signin").attr("hidden", "true");
             $(".search").attr("hidden", "true");
             $(".form-signup").removeAttr("hidden");
             $(".containerSearch").attr("hidden", "true");
+            $("#events").attr("hidden", "true");
         }
     });
 
@@ -168,12 +144,14 @@ $(document).ready(function () {
             $(".form-signin").removeAttr("hidden");
             $(".search").attr("hidden", "true");
             $(".containerSearch").attr("hidden", "true");
+            $("#events").attr("hidden", "true");
         }
         else {
             $(".form-signup").attr("hidden", "true");
             $(".search").attr("hidden", "true");
             $(".form-signin").removeAttr("hidden");
             $(".containerSearch").attr("hidden", "true");
+            $("#events").attr("hidden", "true");
 
         }
     });
