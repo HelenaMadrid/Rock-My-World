@@ -15,11 +15,12 @@ $(document).ready(function () {
     var Name = "";
     var Email = "";
     var Password = "";
+    var SavedEvents = "";
+    var EventID="";
     var emailDatabase = "";
     var passwordDatabase = "";
     var findUserKey = "";
     var emailPassword = false;
-    var APIKEY = "8B9NyQks1iiVdMZV";
     var APIKEYTicketmaster = "Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts";
     var artist = "";
     var artist2 = "";
@@ -29,7 +30,10 @@ $(document).ready(function () {
     function printEvents(results, y, container) {
         var row = $("<div>");
         var eventInfo = $("<div>");
-        var extraInfoButton=$("<button>");
+        var buttonAndHeart = $("<div>");
+        var heart = $("<i>");
+        var favorite = $("<button>");
+        var extraInfoButton = $("<button>");
         var imageConcert = $("<img>");
         var eventName = $("<p>");
         var venueName = $("<p>");
@@ -38,12 +42,19 @@ $(document).ready(function () {
         eventId = results[y].id;
         console.log(eventId);
 
+
         imageConcert.addClass("col-xl-2 p-4");
         row.addClass("row text-center border border-white my-2");
         row.attr("value", eventId);
         eventInfo.addClass("col-xl-8 text-center p-2");
-        extraInfoButton.addClass("btn btn-outline-light col-xl-2");
-        extraInfoButton.attr({"value": eventId, "style": "height:50px; width:30px"});
+        buttonAndHeart.addClass("col-xl-2 pt-5");
+        extraInfoButton.addClass("btn btn-outline-light mt-4");
+        extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%" });
+        heart.addClass("far fa-heart text-white fa-lg");
+        heart.attr("style", "width:100%");
+        favorite.attr({ "style": "background:none", "value": eventId });
+        favorite.addClass("favorite");
+
 
         var eventNameExtracted = results[y].name;
         var venueNameExtracted = results[y]._embedded.venues[0].name;
@@ -59,12 +70,15 @@ $(document).ready(function () {
 
         row.append(imageConcert);
         row.append(eventInfo);
-        row.append(extraInfoButton);
+        row.append(buttonAndHeart);
 
         eventInfo.append(eventName);
         eventInfo.append(venueName);
         eventInfo.append(location);
         eventInfo.append(dateTime);
+
+        buttonAndHeart.append(favorite);
+        buttonAndHeart.append(extraInfoButton);
 
         imageConcert.attr({ "src": imageConcertExtracted, "style": "height:171px; width:240px;" });
 
@@ -73,7 +87,9 @@ $(document).ready(function () {
         location.text(locationExtracted);
         dateTime.text(dateTimeExtracted);
         extraInfoButton.text("More information");
+        favorite.html(heart);
     }
+
     $(".submit").off();
     $(".submit").on("click", function (event) {
         event.preventDefault();
@@ -118,6 +134,13 @@ $(document).ready(function () {
 
     });
 
+    $(".favorite").off();
+    $(".favorite").on("click", function(event){
+        event.preventDefault();
+        window.location.href = "favorites.html";
+        var eventId=$(this).attr("value");
+        console.log(eventId);
+    });
 
     $("#signUpLink").off();
     $("#signUpLink").on("click", function (event) {
@@ -173,7 +196,7 @@ $(document).ready(function () {
         database.ref("users").push({
             Name: name,
             Email: email,
-            Password: password
+            Password: password,
         });
 
         $("#inputUserName").val("");
