@@ -5,18 +5,19 @@ $(document).ready(function () {
         authDomain: "rock-my-world-e94ae.firebaseapp.com",
         databaseURL: "https://rock-my-world-e94ae.firebaseio.com",
         projectId: "rock-my-world-e94ae",
-        storageBucket: "",
+        storageBucket: "rock-my-world-e94ae.appspot.com",
         messagingSenderId: "1006942909376"
     };
     firebase.initializeApp(config);
 
     var database = firebase.database();
+    var auth = firebase.auth();
 
     var Name = "";
     var Email = "";
     var Password = "";
     var SavedEvents = "";
-    var EventID="";
+    var EventID = "";
     var emailDatabase = "";
     var passwordDatabase = "";
     var findUserKey = "";
@@ -25,12 +26,29 @@ $(document).ready(function () {
     var artist = "";
     var artist2 = "";
     var artistfinal = "";
+    var saved = false;
 
+    auth.onAuthStateChanged(function (user) {
+        if (user) {
+            console.log(user + " signed in");
+            var userSignedIn = auth.currentUser;
+
+            if (userSignedIn) {
+                console.log(userSignedIn);
+            } else {
+                // No user is signed in.
+                //console.log(userSignedIn);
+            }
+        } else {
+            // No user is signed in.
+            console.log("no user");
+        }
+    });
 
     function printEvents(results, y, container) {
         var row = $("<div>");
         var eventInfo = $("<div>");
-        var buttonAndHeart = $("<div>");
+        var buttonAndHeart = $("<form>");
         var heart = $("<i>");
         var favorite = $("<button>");
         var extraInfoButton = $("<button>");
@@ -40,19 +58,18 @@ $(document).ready(function () {
         var location = $("<p>");
         var dateTime = $("<p>");
         eventId = results[y].id;
-        console.log(eventId);
-
+        //console.log(eventId);
 
         imageConcert.addClass("col-xl-2 p-4");
         row.addClass("row text-center border border-white my-2");
         row.attr("value", eventId);
         eventInfo.addClass("col-xl-8 text-center p-2");
         buttonAndHeart.addClass("col-xl-2 pt-5");
-        extraInfoButton.addClass("btn btn-outline-light mt-4");
-        extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%" });
+        extraInfoButton.addClass("btn btn-outline-light mt-4 moreInfo");
+        extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%", "type": "button", "data-toggle": "modal", "data-target": "#exampleModalCenter" });
         heart.addClass("far fa-heart text-white fa-lg");
-        heart.attr("style", "width:100%");
-        favorite.attr({ "style": "background:none", "value": eventId });
+        heart.attr({ "style": "width:100%", "value": eventId });
+        favorite.attr({ "style": "background:none; border:none", "value": eventId });
         favorite.addClass("favorite");
 
 
@@ -61,10 +78,6 @@ $(document).ready(function () {
         var locationExtracted = results[y]._embedded.venues[0].city.name + ", " + results[y]._embedded.venues[0].state.name;
         var dateTimeExtracted = results[y].dates.start.localDate + " " + results[y].dates.start.localTime;
         var imageConcertExtracted = results[y].images[2].url;
-
-        console.log(results[y].dates);
-        console.log(results[y].dates.start);
-        console.log(results[y].dates.localTime);
 
         container.append(row);
 
@@ -78,6 +91,7 @@ $(document).ready(function () {
         eventInfo.append(dateTime);
 
         buttonAndHeart.append(favorite);
+        //buttonAndHeart.append(heart);
         buttonAndHeart.append(extraInfoButton);
 
         imageConcert.attr({ "src": imageConcertExtracted, "style": "height:171px; width:240px;" });
@@ -92,9 +106,10 @@ $(document).ready(function () {
 
     $(".submit").off();
     $(".submit").on("click", function (event) {
+        $("#events").empty();
         event.preventDefault();
         $(".containerSearch").attr("hidden", "true");
-        //artist2 = $("#inputUserNav").val().trim();
+        artist2 = $("#inputUserNav").val().trim();
         artist = $("#inputUser").val().trim();
         console.log("artist " + artist);
         console.log(artist2);
@@ -107,11 +122,11 @@ $(document).ready(function () {
         //Now that we have the artistId, we look in events for all the events that have the artistid, this is to ensure that no cover bands to not show in the search. So here we find the eventID. We are limiting the results for 10 events.
         $.ajax({
             type: "GET",
-            url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&keyword=" + artistfinal,
+            url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&keyword=" + artistfinal,
             async: true,
             dataType: "json",
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 var results = response._embedded.events;
                 var container = $("#events");
                 container.addClass("container");
@@ -134,12 +149,81 @@ $(document).ready(function () {
 
     });
 
-    $(".favorite").off();
-    $(".favorite").on("click", function(event){
+    $("#favoritesPage").off();
+    $("#favoritesPage").on("click", function (event) {
         event.preventDefault();
         window.location.href = "favorites.html";
-        var eventId=$(this).attr("value");
+
+    });
+
+    $(".favorite").off();
+    $(".favorite").on("click", function (event) {
+        event.preventDefault();
+        console.log("favorite clicked");
+        console.log(this);
+        var eventId = $(this).attr("value");
         console.log(eventId);
+        saved = true;
+    });
+
+    //$().off();
+    $(document.body).on("click", ".moreInfo", function (event) {
+        event.preventDefault();
+        var eventId = $(this).attr("value");
+        console.log("hola " + eventId);
+        var bodyContainer=$("<div>");
+        $.ajax({
+            type: "GET",
+            url: "https://app.ticketmaster.com/discovery/v2/events/" + eventId + "?apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&",
+            async: true,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                var imageEvent=$("<img>");
+                var dateTime=$("<p>");
+                var location=$("<p>");
+                var venue=$("<p>");
+                var notes=$("<p>");
+                var buyticket=$("<a>");
+                var itunes=$("<a>");
+                var youtube=$("<a>");
+                var facebook=$("<a>");
+                var lastfm=$("<a>");
+                var instragram=$("<a>");
+                var address=$("<p>");
+                var parking=$("<p>");
+                var latitude=response._embedded.venues[0].location.latitude;
+                var longitude=response._embedded.venues[0].location.longitude;
+
+                imageEvent.attr("src", response.images[1].url);
+                dateTime.text(response.dates.start.localDate + " " + response.dates.start.localTime);
+                location.text(response._embedded.venues[0].city.name+", "+response._embedded.venues[0].state.name);
+                venue.text(response._embedded.venues[0].name);
+                address.html("<strong>Address:</strong> "+response._embedded.venues[0].address.line1);
+                parking.html("<strong>Parking Details:</strong> "+response._embedded.venues[0].parkingDetail);
+                notes.html("<strong>Please note:</strong> "+response.pleaseNote);
+                buyticket.text("Buy ticket");
+
+                buyticket.attr("href", response.url);
+
+                $(".modal-title").text(response.name);
+                $(".modal-body").append(bodyContainer);
+
+                bodyContainer.addClass("text-center");
+                venue.attr("style", "font-weight: bold")
+
+                bodyContainer.append(imageEvent);
+                bodyContainer.append(venue);
+                bodyContainer.append(location);
+                bodyContainer.append(dateTime);
+                bodyContainer.append(address);
+                bodyContainer.append(parking);
+                bodyContainer.append(buyticket);
+            },
+            error: function (xhr, status, err) {
+                // This time, we do not end up here!
+            }
+        });
     });
 
     $("#signUpLink").off();
@@ -181,7 +265,12 @@ $(document).ready(function () {
     $("#signOutLink").off();
     $("#signOutLink").on("click", function (event) {
         event.preventDefault();
-        window.location.href = "landingpage.html";
+        auth.signOut().then(function () {
+            window.location.href = "index.html";
+            // Sign-out successful.
+        }).catch(function (error) {
+            // An error happened.
+        });
     });
 
     $("#signUp").off();
@@ -193,15 +282,28 @@ $(document).ready(function () {
 
         console.log(name + email + password);
 
-        database.ref("users").push({
-            Name: name,
-            Email: email,
-            Password: password,
+        // database.ref("users").push({
+        //     Name: name,
+        //     Email: email,
+        //    Password: password,
+        // });
+
+        auth.createUserWithEmailAndPassword(email, password).then(function () {
+            window.location.href = "signedUser.html";
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            // ...
         });
 
-        $("#inputUserName").val("");
-        $("#inputEmail").val("");
-        $("#inputPassword").val("");
+
+
+        // $("#inputUserName").val("");
+        //$("#inputEmail").val("");
+        //$("#inputPassword").val("");
     });
 
     $("#signIn").off();
@@ -209,37 +311,30 @@ $(document).ready(function () {
         event.preventDefault();
         var emailInput = $("#emailSI").val().trim();
         var passwordInput = $("#passwordSI").val().trim();
+        var checkbox = $("#rememberMe");
+        if (checkbox[0].checked === true) {
+            console.log("hola");
+            Cookies.set("Email", emailInput);
+            Cookies.set("Password", passwordInput);
+        }
+        else {
+            console.log("adios");
+        }
 
-        database.ref("users").on("child_added", function (childSnapshot) {
-            //event.preventDefault();
-            var emailDatabaseLocal = childSnapshot.val().Email;
-            var passwordDatabaseLocal = childSnapshot.val().Password;
-            //console.log("key "+keys);
-            console.log(emailDatabaseLocal + " " + passwordDatabaseLocal);
-
-            if (emailInput === emailDatabaseLocal && passwordInput === passwordDatabaseLocal) {
-                //emailDatabase = emailDatabaseLocal;
-                var keys = childSnapshot.key;
-                findUserKey = keys;
-                console.log("key " + keys);
-                $("#messageSignIn").text("This email is registered in our database");
-                console.log(emailInput + " is the same as " + emailDatabaseLocal);
-                console.log(passwordInput + " is the same as " + passwordDatabaseLocal);
-                window.location.href = "signedUser.html";
-            }
-            else {
-                $("#messageSignIn").html("<p>Sorry, the email or password is incorrect</p>");
-                console.log(emailInput + " is not the same as " + emailDatabaseLocal);
-                console.log(passwordInput + " is not the same as " + passwordDatabaseLocal);
-            }
-
-            $("#emailSI").val("");
-            $("#passwordSI").val("");
-
-
+        auth.signInWithEmailAndPassword(emailInput, passwordInput).then(function () {
+            window.location.href = "signedUser.html";
+            console.debug($.cookie("Email"));
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            $("#messageSignIn").html("<p>" + errorMessage + "</p>");
+            // ...
         });
-
     });
+
 
 });
 
