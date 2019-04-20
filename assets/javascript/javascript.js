@@ -27,6 +27,9 @@ $(document).ready(function () {
     var artist2 = "";
     var artistfinal = "";
     var saved = false;
+    var mapsAPIKEY = "AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4";
+
+
 
     auth.onAuthStateChanged(function (user) {
         if (user) {
@@ -66,7 +69,7 @@ $(document).ready(function () {
         eventInfo.addClass("col-xl-8 text-center p-2");
         buttonAndHeart.addClass("col-xl-2 pt-5");
         extraInfoButton.addClass("btn btn-outline-light mt-4 moreInfo");
-        extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%", "type": "button", "data-toggle": "modal", "data-target": "#exampleModalCenter" });
+        extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%", "type": "button", "data-toggle": "modal", "data-target": ".bd-example-modal-lg" });
         heart.addClass("far fa-heart text-white fa-lg");
         heart.attr({ "style": "width:100%", "value": eventId });
         favorite.attr({ "style": "background:none; border:none", "value": eventId });
@@ -168,10 +171,12 @@ $(document).ready(function () {
 
     //$().off();
     $(document.body).on("click", ".moreInfo", function (event) {
+        $(".modal-title").empty();
+        $(".modal-body").empty();
         event.preventDefault();
         var eventId = $(this).attr("value");
         console.log("hola " + eventId);
-        var bodyContainer=$("<div>");
+        var bodyContainer = $("<div>");
         $.ajax({
             type: "GET",
             url: "https://app.ticketmaster.com/discovery/v2/events/" + eventId + "?apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&",
@@ -179,46 +184,90 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 console.log(response);
-                var imageEvent=$("<img>");
-                var dateTime=$("<p>");
-                var location=$("<p>");
-                var venue=$("<p>");
-                var notes=$("<p>");
-                var buyticket=$("<a>");
-                var itunes=$("<a>");
-                var youtube=$("<a>");
-                var facebook=$("<a>");
-                var lastfm=$("<a>");
-                var instragram=$("<a>");
-                var address=$("<p>");
-                var parking=$("<p>");
-                var latitude=response._embedded.venues[0].location.latitude;
-                var longitude=response._embedded.venues[0].location.longitude;
-
-                imageEvent.attr("src", response.images[1].url);
-                dateTime.text(response.dates.start.localDate + " " + response.dates.start.localTime);
-                location.text(response._embedded.venues[0].city.name+", "+response._embedded.venues[0].state.name);
-                venue.text(response._embedded.venues[0].name);
-                address.html("<strong>Address:</strong> "+response._embedded.venues[0].address.line1);
-                parking.html("<strong>Parking Details:</strong> "+response._embedded.venues[0].parkingDetail);
-                notes.html("<strong>Please note:</strong> "+response.pleaseNote);
-                buyticket.text("Buy ticket");
-
-                buyticket.attr("href", response.url);
-
+                var imageEvent = $("<img>");
+                var dateTime = $("<p>");
+                var location = $("<p>");
+                var venue = $("<p>");
+                var notes = $("<p>");
+                var buyticket = $("<a>");
+                var itunes = $("<a>");
+                var youtube = $("<a>");
+                var facebook = $("<a>");
+                var lastfm = $("<a>");
+                var instagram = $("<a>");
+                var address = $("<p>");
+                var parking = $("<p>");
+                var homepage = $("<a>");
+                var seatmap = $("<img>");
+                var ticketPrice = $("<p>");
+                var mapDiv = $("<div>");
+                var seatMapButton = $("<a>");
+                var latitude = response._embedded.venues[0].location.latitude;
+                var longitude = response._embedded.venues[0].location.longitude;
+                //var latitude = 39.305;
+                //var longitude = -76.617;
+                console.log(latitude);
+                
                 $(".modal-title").text(response.name);
                 $(".modal-body").append(bodyContainer);
-
-                bodyContainer.addClass("text-center");
-                venue.attr("style", "font-weight: bold")
-
                 bodyContainer.append(imageEvent);
                 bodyContainer.append(venue);
                 bodyContainer.append(location);
                 bodyContainer.append(dateTime);
                 bodyContainer.append(address);
+                bodyContainer.append(ticketPrice);
+                //bodyContainer.append(seatMapButton);
+                bodyContainer.append(seatmap);
                 bodyContainer.append(parking);
+                bodyContainer.append(notes);
                 bodyContainer.append(buyticket);
+                bodyContainer.append(itunes);
+                bodyContainer.append(youtube);
+                bodyContainer.append(instagram);
+                bodyContainer.append(facebook);
+                bodyContainer.append(lastfm);
+                bodyContainer.append(homepage);
+                bodyContainer.append(mapDiv);
+
+                var locationFormated = new google.maps.LatLng(latitude, longitude);
+
+                mapDiv.attr("id", "map");
+                mapDiv.attr("style", "height:400px");
+               
+                dateTime.text(response.dates.start.localDate + " " + response.dates.start.localTime);
+                location.text(response._embedded.venues[0].city.name + ", " + response._embedded.venues[0].state.name);
+                venue.text(response._embedded.venues[0].name);
+                address.html("<strong>Address:</strong> " + response._embedded.venues[0].address.line1);
+                parking.html("<strong>Parking Details:</strong> " + response._embedded.venues[0].parkingDetail);
+                notes.html("<strong>Please note:</strong> " + response.pleaseNote);
+                ticketPrice.html("<strong>Tickets: </strong><p>$" + response.priceRanges[0].min + " - $" + response.priceRanges[0].max + " USD.</p>");
+                buyticket.text("Buy ticket");
+                itunes.text("iTunes");
+                youtube.html("<img src='assets/images/Youtube.svg' style='height:50px; width:50px'>");
+                instagram.html("<img src='assets/images/Instagram.svg' style='height:50px; width:50px'>");
+                facebook.html("<img src='assets/images/Facebook.svg' style='height:50px; width:50px'>");
+                lastfm.html("<img src='assets/images/LastFm.svg' style='height:50px; width:50px'>");
+                homepage.text("homepage");
+
+                seatmap.attr("src", response.seatmap.staticUrl);
+                imageEvent.attr("src", response.images[1].url);
+                buyticket.attr("href", response.url);
+                itunes.attr("href", response._embedded.attractions[0].externalLinks.itunes[0].url);
+                youtube.attr("href", response._embedded.attractions[0].externalLinks.youtube[0].url);
+                instagram.attr("href", response._embedded.attractions[0].externalLinks.instagram[0].url);
+                facebook.attr("href", response._embedded.attractions[0].externalLinks.facebook[0].url);
+                lastfm.attr("href", response._embedded.attractions[0].externalLinks.lastfm[0].url);
+                homepage.attr("href", response._embedded.attractions[0].externalLinks.homepage[0].url)
+
+                bodyContainer.addClass("text-center");
+                venue.addClass("font-weight-bold mt-3");
+
+                //seatMapButton.attr({"href": "#", "role": "button", "title": "Seat Map", "data-content":"hola"});
+                //seatMapButton.addClass("btn btn-secondary popover-test");
+                //seatMapButton.text("Seat Map");
+
+                var map = new google.maps.Map(document.getElementById('map'), { center: locationFormated, zoom: 15 });
+                var marker = new google.maps.Marker({position: locationFormated, map: map});
             },
             error: function (xhr, status, err) {
                 // This time, we do not end up here!
