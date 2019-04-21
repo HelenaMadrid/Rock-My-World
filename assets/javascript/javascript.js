@@ -28,16 +28,18 @@ $(document).ready(function () {
     var artistfinal = "";
     var saved = false;
     var mapsAPIKEY = "AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4";
+    userSignedIn = "";
 
 
 
     auth.onAuthStateChanged(function (user) {
         if (user) {
             console.log(user + " signed in");
-            var userSignedIn = auth.currentUser;
+            userSignedIn = auth.currentUser;
 
             if (userSignedIn) {
                 console.log(userSignedIn);
+                console.log(userSignedIn.uid);
             } else {
                 // No user is signed in.
                 //console.log(userSignedIn);
@@ -72,7 +74,7 @@ $(document).ready(function () {
         extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%", "type": "button", "data-toggle": "modal", "data-target": ".bd-example-modal-lg" });
         heart.addClass("far fa-heart text-white fa-lg");
         heart.attr({ "style": "width:100%", "value": eventId });
-        favorite.attr({ "style": "background:none; border:none", "value": eventId });
+        favorite.attr({ "style": "background:none; border:none", "value": eventId, "type": "button" });
         favorite.addClass("favorite");
 
 
@@ -159,15 +161,40 @@ $(document).ready(function () {
 
     });
 
-    $(".favorite").off();
-    $(".favorite").on("click", function (event) {
+    //$(".favorite").off();
+    //$(document.body).off();
+    $(document.body).off("click", ".favorite");
+    $(document.body).on("click", ".favorite", function (event) {
         event.preventDefault();
-        console.log("favorite clicked");
-        console.log(this);
         var eventId = $(this).attr("value");
+        console.log(this);
         console.log(eventId);
-        saved = true;
+
+        if (saved === false) {
+            $(this).children().removeClass("far");
+            $(this).children().addClass("fas");
+            saved = true;
+            console.log("favorite saved");
+            database.ref("users/"+ userSignedIn.uid).push({
+            EventID: eventId,
+        });
+        }
+
+        else {
+            $(this).children().removeClass("fas");
+            $(this).children().addClass("far");
+            saved = false;
+            //database.ref("users/"+ userSignedIn.uid).remove({
+                //EventID: eventId,
+            //});
+            console.log("favorite unsaved");
+        }
+
+
+
     });
+
+    
 
     //$().off();
     $(document.body).on("click", ".moreInfo", function (event) {
@@ -207,7 +234,7 @@ $(document).ready(function () {
                 //var latitude = 39.305;
                 //var longitude = -76.617;
                 console.log(latitude);
-                
+
                 $(".modal-title").text(response.name);
                 $(".modal-body").append(bodyContainer);
                 bodyContainer.append(imageEvent);
@@ -233,14 +260,14 @@ $(document).ready(function () {
 
                 mapDiv.attr("id", "map");
                 mapDiv.attr("style", "height:400px");
-               
+
                 dateTime.text(response.dates.start.localDate + " " + response.dates.start.localTime);
                 location.text(response._embedded.venues[0].city.name + ", " + response._embedded.venues[0].state.name);
-                venue.text(response._embedded.venues[0].name);
-                address.html("<strong>Address:</strong> " + response._embedded.venues[0].address.line1);
-                parking.html("<strong>Parking Details:</strong> " + response._embedded.venues[0].parkingDetail);
-                notes.html("<strong>Please note:</strong> " + response.pleaseNote);
-                ticketPrice.html("<strong>Tickets: </strong><p>$" + response.priceRanges[0].min + " - $" + response.priceRanges[0].max + " USD.</p>");
+                venue.html("<h3>" + response._embedded.venues[0].name + "</h3>");
+                address.html("<strong>Address</strong><p>" + response._embedded.venues[0].address.line1 + "</p>");
+                parking.html("<strong>Parking Details</strong><p>" + response._embedded.venues[0].parkingDetail + "</p>");
+                notes.html("<strong>Please note</strong><p> " + response.pleaseNote + "</p>");
+                ticketPrice.html("<strong>Tickets</strong><p>$" + response.priceRanges[0].min + " - $" + response.priceRanges[0].max + " USD.</p>");
                 buyticket.text("Buy ticket");
                 itunes.text("iTunes");
                 youtube.html("<img src='assets/images/Youtube.svg' style='height:50px; width:50px'>");
@@ -249,15 +276,16 @@ $(document).ready(function () {
                 lastfm.html("<img src='assets/images/LastFm.svg' style='height:50px; width:50px'>");
                 homepage.text("homepage");
 
+                seatmap.addClass("m-2");
                 seatmap.attr("src", response.seatmap.staticUrl);
                 imageEvent.attr("src", response.images[1].url);
-                buyticket.attr("href", response.url);
-                itunes.attr("href", response._embedded.attractions[0].externalLinks.itunes[0].url);
-                youtube.attr("href", response._embedded.attractions[0].externalLinks.youtube[0].url);
-                instagram.attr("href", response._embedded.attractions[0].externalLinks.instagram[0].url);
-                facebook.attr("href", response._embedded.attractions[0].externalLinks.facebook[0].url);
-                lastfm.attr("href", response._embedded.attractions[0].externalLinks.lastfm[0].url);
-                homepage.attr("href", response._embedded.attractions[0].externalLinks.homepage[0].url)
+                buyticket.attr({ "href": response.url, "target": "_blank" });
+                itunes.attr({ "href": response._embedded.attractions[0].externalLinks.itunes[0].url, "target": "_blank" });
+                youtube.attr({ "href": response._embedded.attractions[0].externalLinks.youtube[0].url, "target": "_blank" });
+                instagram.attr({ "href": response._embedded.attractions[0].externalLinks.instagram[0].url, "target": "_blank" });
+                facebook.attr({ "href": response._embedded.attractions[0].externalLinks.facebook[0].url, "target": "_blank" });
+                lastfm.attr({ "href": response._embedded.attractions[0].externalLinks.lastfm[0].url, "target": "_blank" });
+                homepage.attr({ "href": response._embedded.attractions[0].externalLinks.homepage[0].url, "target": "_blank" });
 
                 bodyContainer.addClass("text-center");
                 venue.addClass("font-weight-bold mt-3");
@@ -267,7 +295,7 @@ $(document).ready(function () {
                 //seatMapButton.text("Seat Map");
 
                 var map = new google.maps.Map(document.getElementById('map'), { center: locationFormated, zoom: 15 });
-                var marker = new google.maps.Marker({position: locationFormated, map: map});
+                var marker = new google.maps.Marker({ position: locationFormated, map: map });
             },
             error: function (xhr, status, err) {
                 // This time, we do not end up here!
