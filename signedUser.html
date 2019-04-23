@@ -26,19 +26,23 @@
 <body class="text-center">
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand text-white border border-info px-3" href="signedUser.html">Rock My World</a>
-        <form class="form-inline">
+        <form class="form-inline ml-4 pl-4">
             <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav"
                 required>
             <input type="submit" class="submit btn btn-outline-info mr-4">
         </form>
-
         <form class="form-inline">
-            <a href="favorites.html" id="favoritesPage"><i class="far fa-heart text-white fa-lg"></i></a>
+            <div class="text-white h3 mr-4" id="hiUser"></div>
+            <button id="favoritesPage" style="background:none; border:none"><i
+                    class="far fa-heart text-white fa-lg"></i></button>
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signOutLink">Sign Out</button>
         </form>
     </nav>
     <div class="container-fluid">
         <div id="events" class="container text-white"></div>
+        <select id="dropdown" hidden></select>
+
+        <div id="printSavedEvents" hidden></div>
         <div class="row noNavBar">
             <div class="container containerSearch col-xl-9">
                 <div class="container float-right col-xl-8">

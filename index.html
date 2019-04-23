@@ -31,7 +31,7 @@
             <input type="submit" class="submit btn btn-outline-info mr-4">
         </form>
         <form class="form-inline">
-            <i class="far fa-heart text-white fa-lg"></i>
+            <button id="favoritesPage" style="background:none; border:none"><i class="far fa-heart text-white fa-lg"></i></button>
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signUpLink">Sign Up</button>
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="signInLink">Sign In</button>
         </form>
@@ -39,6 +39,9 @@
 
     <div class="container align-middle">
         <div id="events" class="container text-white"></div>
+        <select id="dropdown" hidden></select>
+
+        <div id="printSavedEvents" hidden></div>
 
         <form class="form-signup text-white" hidden>
             <img class="mb-4"
