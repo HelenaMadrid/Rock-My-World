@@ -28,28 +28,77 @@ $(document).ready(function () {
     var artistfinal = "";
     var saved = false;
     var mapsAPIKEY = "AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4";
-    var userSignedIn = "";
-    var displayName = "";
-    var name = "";
-
+    //var user = auth.currentUser;
+    var nameUser;
 
     auth.onAuthStateChanged(function (user) {
         if (user) {
             console.log(user + " signed in");
-            userSignedIn = auth.currentUser;
-            if (userSignedIn) {
-                console.log(userSignedIn);
-                console.log(userSignedIn.uid);
-            } else {
-                // No user is signed in.
-                //console.log(userSignedIn);
-            }
+            console.log(nameUser);
 
         }
         else {
             // No user is signed in.
             console.log("no user");
         }
+    });
+
+    
+
+    $("#signUp").off();
+    $("#signUp").on("click", function (event) {
+        event.preventDefault();
+        var name = $("#inputUserName").val().trim();
+        var email = $("#inputEmail").val().trim();
+        var password = $("#inputPassword").val().trim();
+
+        console.log(name + email + password);
+
+        nameUser = name;
+
+        auth.createUserWithEmailAndPassword(email, password).then(function () {
+            window.location.href = "signedUser.html";
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+
+        });
+       
+        // $("#inputUserName").val("");
+        //$("#inputEmail").val("");
+        //$("#inputPassword").val("");
+    });
+
+    $("#signIn").off();
+    $("#signIn").on("click", function (event) {
+        event.preventDefault();
+        var emailInput = $("#emailSI").val().trim();
+        var passwordInput = $("#passwordSI").val().trim();
+        var checkbox = $("#rememberMe");
+        if (checkbox[0].checked === true) {
+            console.log("hola");
+            Cookies.set("Email", emailInput);
+            Cookies.set("Password", passwordInput);
+        }
+        else {
+            console.log("adios");
+        }
+
+        auth.signInWithEmailAndPassword(emailInput, passwordInput).then(function () {
+            window.location.href = "signedUser.html";
+            //console.debug($.cookie("Email"));
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            $("#messageSignIn").html("<p>" + errorMessage + "</p>");
+            // ...
+        });
     });
 
     function printEvents(results, y, container) {
@@ -78,7 +127,6 @@ $(document).ready(function () {
         heart.attr({ "style": "width:100%", "value": eventId });
         favorite.attr({ "style": "background:none; border:none", "value": eventId, "type": "button" });
         favorite.addClass("favorite");
-
 
         var eventNameExtracted = results[y].name;
         var venueNameExtracted = results[y]._embedded.venues[0].name;
@@ -115,51 +163,56 @@ $(document).ready(function () {
     $(".submit").on("click", function (event) {
         $("#events").empty();
         event.preventDefault();
-        $(".containerSearch").attr("hidden", "true");
         artist2 = $("#inputUserNav").val().trim();
         artist = $("#inputUser").val().trim();
-        console.log("artist " + artist);
-        console.log(artist2);
-        if (artist2 === "") {
-            artistfinal = artist;
+        if (artist === "" & artist2 === "") {
+            $("#events").text("Dear user, please type something.");
         }
-        if (artist === "") {
-            artistfinal = artist2;
-        }
-        //Now that we have the artistId, we look in events for all the events that have the artistid, this is to ensure that no cover bands to not show in the search. So here we find the eventID. We are limiting the results for 10 events.
-        $.ajax({
-            type: "GET",
-            url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&keyword=" + artistfinal,
-            async: true,
-            dataType: "json",
-            success: function (response) {
-                //console.log(response);
-                var results = response._embedded.events;
-                var container = $("#events");
-                container.addClass("container");
-
-                if (results.length < 10) {
-                    for (var y = 0; y < results.length; y++) {
-                        printEvents(results, y, container);
-                    }
-                }
-                else {
-                    for (var y = 0; y < 10; y++) {
-                        printEvents(results, y, container);
-                    }
-                }
-            },
-            error: function (xhr, status, err) {
-                // This time, we do not end up here!
+        else {
+            $(".containerSearch").attr("hidden", "true");
+            console.log("artist " + artist);
+            console.log(artist2);
+            if (artist2 === "") {
+                artistfinal = artist;
             }
-        });
-        artist="";
-        artist2="";
+            if (artist === "") {
+                artistfinal = artist2;
+            }
+            //Now that we have the artistId, we look in events for all the events that have the artistid, this is to ensure that no cover bands to not show in the search. So here we find the eventID. We are limiting the results for 10 events.
+            $.ajax({
+                type: "GET",
+                url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&keyword=" + artistfinal,
+                async: true,
+                dataType: "json",
+                success: function (response) {
+                    //console.log(response);
+                    var results = response._embedded.events;
+                    var container = $("#events");
+                    container.addClass("container");
+
+                    if (results.length < 10) {
+                        for (var y = 0; y < results.length; y++) {
+                            printEvents(results, y, container);
+                        }
+                    }
+                    else {
+                        for (var y = 0; y < 10; y++) {
+                            printEvents(results, y, container);
+                        }
+                    }
+                },
+                error: function (xhr, status, err) {
+                    // This time, we do not end up here!
+                }
+            });
+            artist = "";
+            artist2 = "";
+        }
     });
 
     $("#favoritesPage").off();
     $("#favoritesPage").on("click", function (event) {
-        event.preventDefault();
+        //event.preventDefault();
         //window.location.href = "favorites.html";
         console.log("jjjjj" + userSignedIn.uid);
         // database.ref("users/"+ userSignedIn.uid).on("child_added", function (snapshot) {
@@ -360,59 +413,5 @@ $(document).ready(function () {
         });
     });
 
-    $("#signUp").off();
-    $("#signUp").on("click", function (event) {
-        event.preventDefault();
-        name = $("#inputUserName").val().trim();
-        var email = $("#inputEmail").val().trim();
-        var password = $("#inputPassword").val().trim();
-
-        console.log(name + email + password);
-
-        auth.createUserWithEmailAndPassword(email, password).then(function () {
-            window.location.href = "signedUser.html";
-        }).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
-            
-
-        });
-        // $("#inputUserName").val("");
-        //$("#inputEmail").val("");
-        //$("#inputPassword").val("");
-
-    });
-
-    $("#signIn").off();
-    $("#signIn").on("click", function (event) {
-        event.preventDefault();
-        var emailInput = $("#emailSI").val().trim();
-        var passwordInput = $("#passwordSI").val().trim();
-        var checkbox = $("#rememberMe");
-        if (checkbox[0].checked === true) {
-            console.log("hola");
-            Cookies.set("Email", emailInput);
-            Cookies.set("Password", passwordInput);
-        }
-        else {
-            console.log("adios");
-        }
-
-        auth.signInWithEmailAndPassword(emailInput, passwordInput).then(function () {
-            window.location.href = "signedUser.html";
-            //console.debug($.cookie("Email"));
-        }).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
-            $("#messageSignIn").html("<p>" + errorMessage + "</p>");
-            // ...
-        });
-    });
 
 });
