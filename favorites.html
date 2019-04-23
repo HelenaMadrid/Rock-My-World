@@ -29,11 +29,12 @@
         <form class="form-inline">
             <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav">
             <input type="submit" class="submit btn btn-outline-info mr-4">
-            <a href="favorites.html"><i class="far fa-heart text-white fa-lg"></i></a>
+            <a href="favorites.html" id="favoritesPage"><i class="far fa-heart text-white fa-lg"></i></a>
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signOutLink">Sign Out</button>
         </form>
     </nav>
     <div class="container-fluid">
+        <div id="printSavedEvents"></div>
         <div id="events" class="container text-white"></div>
 
         <div class="row" hidden>

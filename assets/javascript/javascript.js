@@ -28,22 +28,29 @@ $(document).ready(function () {
     var artistfinal = "";
     var saved = false;
     var mapsAPIKEY = "AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4";
-    userSignedIn = "";
-
+    var userSignedIn = "";
+    var displayName = "";
+    var name = "";
 
 
     auth.onAuthStateChanged(function (user) {
-        if (user) {
+        if (user != null) {
             console.log(user + " signed in");
             userSignedIn = auth.currentUser;
 
-            if (userSignedIn) {
-                console.log(userSignedIn);
-                console.log(userSignedIn.uid);
-            } else {
-                // No user is signed in.
-                //console.log(userSignedIn);
-            }
+            userSignedIn.providerData.forEach(function (profile) {
+                console.log("  Provider-specific UID: " + profile.uid);
+                console.log("  Name: " + profile.displayName);
+                console.log("  Name: " + profile.Name);
+                console.log("  Email: " + profile.email);
+                console.log("  Photo URL: " + profile.photoURL);
+                // Update successful.
+                console.log("worked");
+            }).catch(function (error) {
+                console.log("didn't work");
+                // An error happened.
+            });
+
         } else {
             // No user is signed in.
             console.log("no user");
@@ -157,7 +164,13 @@ $(document).ready(function () {
     $("#favoritesPage").off();
     $("#favoritesPage").on("click", function (event) {
         event.preventDefault();
-        window.location.href = "favorites.html";
+        //window.location.href = "favorites.html";
+        console.log("jjjjj" + userSignedIn.uid);
+        // database.ref("users/"+ userSignedIn.uid).on("child_added", function (snapshot) {
+        //  console.log(snapshot);
+        //   $("#printSavedEvents").text("Hola hola hola hola");
+        //});
+
 
     });
 
@@ -175,9 +188,13 @@ $(document).ready(function () {
             $(this).children().addClass("fas");
             saved = true;
             console.log("favorite saved");
-            database.ref("users/"+ userSignedIn.uid).push({
-            EventID: eventId,
-        });
+            var currentUserEmail = userSignedIn.email;
+            console.log(currentUserEmail);
+            //database.ref("users/" + userSignedIn.uid).push({
+            //    EventID: eventId,
+            //});
+            //database.ref("users").child(currentUserEmail).setValue(eventId);
+
         }
 
         else {
@@ -185,7 +202,7 @@ $(document).ready(function () {
             $(this).children().addClass("far");
             saved = false;
             //database.ref("users/"+ userSignedIn.uid).remove({
-                //EventID: eventId,
+            //EventID: eventId,
             //});
             console.log("favorite unsaved");
         }
@@ -193,8 +210,6 @@ $(document).ready(function () {
 
 
     });
-
-    
 
     //$().off();
     $(document.body).on("click", ".moreInfo", function (event) {
@@ -353,34 +368,34 @@ $(document).ready(function () {
     $("#signUp").off();
     $("#signUp").on("click", function (event) {
         event.preventDefault();
-        var name = $("#inputUserName").val().trim();
+        name = $("#inputUserName").val().trim();
         var email = $("#inputEmail").val().trim();
         var password = $("#inputPassword").val().trim();
 
         console.log(name + email + password);
 
-        // database.ref("users").push({
-        //     Name: name,
-        //     Email: email,
-        //    Password: password,
-        // });
+        auth.createUserWithEmailAndPassword(email, password).then({
+            if (user) {
+                user.updateProfile({
+                    displayName: name
+                }).then(function () {
+                    //window.location.href = "signedUser.html";
+                    console.log("helena");
 
-        auth.createUserWithEmailAndPassword(email, password).then(function () {
-            window.location.href = "signedUser.html";
-        }).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorCode);
-            console.log(errorMessage);
-            // ...
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+                    // ...
+                });
+                // $("#inputUserName").val("");
+                //$("#inputEmail").val("");
+                //$("#inputPassword").val("");
+            }
         });
 
-
-
-        // $("#inputUserName").val("");
-        //$("#inputEmail").val("");
-        //$("#inputPassword").val("");
     });
 
     $("#signIn").off();
@@ -412,6 +427,4 @@ $(document).ready(function () {
         });
     });
 
-
 });
-
