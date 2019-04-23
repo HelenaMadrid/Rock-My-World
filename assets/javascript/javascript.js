@@ -31,10 +31,41 @@ $(document).ready(function () {
     //var user = auth.currentUser;
     var nameUser;
 
+    function updateProfile() {
+        var user = auth.currentUser;
+        user.updateProfile({
+            displayName: nameUser
+        }).then(function () {
+            // Update successful.
+            window.location.href = "signedUser.html";
+        }).catch(function (error) {
+            // An error happened.
+        });
+    }
+
     auth.onAuthStateChanged(function (user) {
         if (user) {
             console.log(user + " signed in");
             console.log(nameUser);
+            //updateProfile();
+            if (user) {
+                console.log(user);
+                console.log(user.uid);
+                var named, email, uid;
+                if (user != null) {
+                    named = user.displayName;
+                    email = user.email;
+                    uid = user.uid;
+                    console.log("name " + named);
+                    console.log("name displayed" + user.displayName);
+                    console.log("email " + email);
+                    console.log("uid " + uid);
+                    //console.log(user);
+                }
+            } else {
+                // No user is signed in.
+                //console.log(userSignedIn);
+            }
 
         }
         else {
@@ -42,8 +73,6 @@ $(document).ready(function () {
             console.log("no user");
         }
     });
-
-    
 
     $("#signUp").off();
     $("#signUp").on("click", function (event) {
@@ -57,16 +86,14 @@ $(document).ready(function () {
         nameUser = name;
 
         auth.createUserWithEmailAndPassword(email, password).then(function () {
-            window.location.href = "signedUser.html";
+            updateProfile();
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode);
             console.log(errorMessage);
-
         });
-       
         // $("#inputUserName").val("");
         //$("#inputEmail").val("");
         //$("#inputPassword").val("");
