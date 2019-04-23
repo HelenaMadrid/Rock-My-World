@@ -27,33 +27,15 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand text-white border border-info px-3" href="signedUser.html">Rock My World</a>
         <form class="form-inline">
-            <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav" required>
+            <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav">
             <input type="submit" class="submit btn btn-outline-info mr-4">
             <a href="favorites.html" id="favoritesPage"><i class="far fa-heart text-white fa-lg"></i></a>
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signOutLink">Sign Out</button>
         </form>
     </nav>
     <div class="container-fluid">
+        <div id="printSavedEvents"></div>
         <div id="events" class="container text-white"></div>
-        <div class="row noNavBar">
-            <div class="container containerSearch col-xl-9">
-                <div class="container float-right col-xl-8">
-                    <h1 class="text-white"><strong>Rock My World</strong></h1>
-                    <h2 class="text-white">Welcome to <em>Rock My World</em> where you can check the concert dates of
-                        your
-                        favorite artists and bands! Search by Location or by Artist.</h2>
-                    <form class="search">
-                        <input type="text" placeholder="Artist, Band or Location" id="inputUser" required>
-                        <input type="submit" class="btn btn-lg btn-primary btn-block my-2 submit">
-                    </form>
-                </div>
-            </div>
-            <div class="container col-xl-3">
-                <iframe src="https://open.spotify.com/embed/user/spotify/playlist/37i9dQZEVXcFEwr1U48Mnq" width="300"
-                    height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-            </div>
-        </div>
-
 
         <div class="row" hidden>
             <div w-type="event-discovery" w-tmapikey="Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts"
@@ -66,35 +48,12 @@
             <script
                 src="https://ticketmaster-api-staging.github.io/products-and-docs/widgets/event-discovery/1.0.0/lib/main-widget.js"></script>
         </div>
-
-
-        <!-- Modal -->
-        <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-center" id="exampleModalCenterTitle">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script src="assets/javascript/javascript.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4">
-    </script>
 </body>
 
 </html>

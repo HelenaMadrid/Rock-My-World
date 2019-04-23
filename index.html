@@ -4,11 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Rock My World</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css">-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -21,74 +23,94 @@
 
 </head>
 
-<body>
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-4">Rock My World</h1>
-            <p class="lead">Get all the information about concerts here.</p>
+<body class="text-center">
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand text-white border border-info px-3" href="index.html">Rock My World</a>
+        <form class="form-inline">
+            <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav" required>
+            <input type="submit" class="submit btn btn-outline-info mr-4">
+            <i class="far fa-heart text-white fa-lg"></i>
+            <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signUpLink">Sign Up</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="signInLink">Sign In</button>
+        </form>
+    </nav>
+
+    <div class="container align-middle">
+        <div id="events" class="container text-white"></div>
+
+        <form class="form-signup text-white" hidden>
+            <img class="mb-4"
+                src="https://2rcjb24cbz0o2q658b64vmrj-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/12358706_web1_g21.jpg"
+                alt="" width="72" height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
+            <label for="inputUserName" class="sr-only">Name</label>
+            <input type="text" id="inputUserName" class="form-control" placeholder="Helena Madrid" required autofocus>
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+            <div class="checkbox mb-3">
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="signUp">Sign Up</button>
+
+        </form>
+
+        <form class="form-signin text-white" hidden>
+            <img class="mb-4"
+                src="https://2rcjb24cbz0o2q658b64vmrj-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/12358706_web1_g21.jpg"
+                alt="" width="72" height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="emailSI" class="form-control" placeholder="Email address" required autofocus>
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="passwordSI" class="form-control" placeholder="Password" required>
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me" id="rememberMe"> Remember me
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="signIn">Sign in</button>
+            <div id="messageSignIn" class="text-white"></div>
+        </form>
+
+        <div class="container noNavBar containerSearch">
+            <h1 class="text-white"><strong>Rock My World</strong></h1>
+            <h2 class="text-white">Welcome to <em>Rock My World</em> where you can check the concert dates of your
+                favorite artists and bands! Search by Location or by Artist.</h2>
+            <form class="search">
+                <input type="text" placeholder="Artist, Band or Location" id="inputUser" required>
+                <input type="submit" class="btn btn-lg btn-primary btn-block my-2 submit">
+            </form>
+
         </div>
-    </div>
-    <div class="container">
-        <form>
-            <input type="text" placeholder="Artist, Band or Location">
-            <input id="submit" type="submit">
-        </form>
-        <div id="print"></div>
-        <br>
-        <form>
-            <h3>Sign Up</h3>
-            <label>Name: </label>
-            <input type="text" id="userName" placeholder="Name" required><br>
-            <label>Email: </label>
-            <input type="email" id="userEmail" placeholder="xxx@yyy.com" required><br>
-            <label>Password: </label>
-            <input type="password" id="userPassword" placeholder="*******" required><br>
-            <input id="signUp" type="submit">
-        </form>
-        <div id="messageSignUp"></div>
-        <br>
-        <form>
-            <h3>Sign In</h3>
-            <label>Email: </label>
-            <input type="email" id="emailSI" placeholder="xxx@yyy.com" required><br>
-            <label>Password: </label>
-            <input type="password" id="passwordSI" placeholder="*******" required><br>
-            <input id="signIn" type="submit">
-        </form>
-        <div id="messageSignIn"></div>
 
-        <script src="javascript.js"></script>
-
-        <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="assets/javascript/javascript.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://code.jquery.com/jquery.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4"></script>
     </div>
 
-    <div id="events"></div>
-<script>
-    var APIKEY = "8B9NyQks1iiVdMZV";
- 
-  $(document).ready(function() {
-  
-    $.ajax({
-            url: "https://api.songkick.com/api/3.0/search/artists.json?apikey="+APIKEY+"&query=Radiohead",
-            method: "GET"
-        }).then(function (response) {
-            //var results = response.data;
-            console.log(response.resultsPage.results.artist[0].displayName);
-            var results = response.resultsPage.results.artist;
-
-            for (var i = 0; i < results.length; i++) {
-                console.log(results[i].displayName + " " + results[i].uri);
-
-                $("#events").append("<li><a href=" + results[i].uri + ">" + results[i].displayName + "</a></li>");
-            };
-
-    
-        });
-
-  });
-</script>
 
 </body>
 
