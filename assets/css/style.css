@@ -4,14 +4,16 @@ body {
 }
 
 body{
-    background-image: url("../images/placeholder.jpg");
+    /*background-image: url("../images/placeholder.jpg");*/
+    background-image: url("../images/hard-summer.jpg");
     background-color: black;
     background-size: 100%;  
 }
 
 
 .navbar{
-    background-image: url("../images/placeholder.jpg");
+    /*background-image: url("../images/placeholder.jpg");*/
+    background-image: url("../images/hard-summer.jpg");
     background-color: black;
     background-size: 100%;
     

@@ -29,7 +29,9 @@
         <form class="form-inline">
             <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav" required>
             <input type="submit" class="submit btn btn-outline-info mr-4">
-            <i class="far fa-heart text-white fa-lg"></i>
+        </form>
+        <form class="form-inline">
+            <button id="favoritesPage" style="background:none; border:none"><i class="far fa-heart text-white fa-lg"></i></button>
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signUpLink">Sign Up</button>
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="signInLink">Sign In</button>
         </form>
@@ -37,6 +39,9 @@
 
     <div class="container align-middle">
         <div id="events" class="container text-white"></div>
+        <select id="dropdown" hidden></select>
+
+        <div id="printSavedEvents" hidden></div>
 
         <form class="form-signup text-white" hidden>
             <img class="mb-4"
@@ -85,9 +90,9 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
