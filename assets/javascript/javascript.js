@@ -34,24 +34,19 @@ $(document).ready(function () {
 
 
     auth.onAuthStateChanged(function (user) {
-        if (user != null) {
+        if (user) {
             console.log(user + " signed in");
             userSignedIn = auth.currentUser;
+            if (userSignedIn) {
+                console.log(userSignedIn);
+                console.log(userSignedIn.uid);
+            } else {
+                // No user is signed in.
+                //console.log(userSignedIn);
+            }
 
-            userSignedIn.providerData.forEach(function (profile) {
-                console.log("  Provider-specific UID: " + profile.uid);
-                console.log("  Name: " + profile.displayName);
-                console.log("  Name: " + profile.Name);
-                console.log("  Email: " + profile.email);
-                console.log("  Photo URL: " + profile.photoURL);
-                // Update successful.
-                console.log("worked");
-            }).catch(function (error) {
-                console.log("didn't work");
-                // An error happened.
-            });
-
-        } else {
+        }
+        else {
             // No user is signed in.
             console.log("no user");
         }
@@ -158,7 +153,8 @@ $(document).ready(function () {
                 // This time, we do not end up here!
             }
         });
-
+        artist="";
+        artist2="";
     });
 
     $("#favoritesPage").off();
@@ -176,7 +172,7 @@ $(document).ready(function () {
 
     //$(".favorite").off();
     //$(document.body).off();
-    $(document.body).off("click", ".favorite");
+    //$(document.body).off("click", ".favorite");
     $(document.body).on("click", ".favorite", function (event) {
         event.preventDefault();
         var eventId = $(this).attr("value");
@@ -271,8 +267,6 @@ $(document).ready(function () {
                 bodyContainer.append(homepage);
                 bodyContainer.append(mapDiv);
 
-                var locationFormated = new google.maps.LatLng(latitude, longitude);
-
                 mapDiv.attr("id", "map");
                 mapDiv.attr("style", "height:400px");
 
@@ -309,6 +303,7 @@ $(document).ready(function () {
                 //seatMapButton.addClass("btn btn-secondary popover-test");
                 //seatMapButton.text("Seat Map");
 
+                var locationFormated = new google.maps.LatLng(latitude, longitude);
                 var map = new google.maps.Map(document.getElementById('map'), { center: locationFormated, zoom: 15 });
                 var marker = new google.maps.Marker({ position: locationFormated, map: map });
             },
@@ -374,27 +369,20 @@ $(document).ready(function () {
 
         console.log(name + email + password);
 
-        auth.createUserWithEmailAndPassword(email, password).then({
-            if (user) {
-                user.updateProfile({
-                    displayName: name
-                }).then(function () {
-                    //window.location.href = "signedUser.html";
-                    console.log("helena");
+        auth.createUserWithEmailAndPassword(email, password).then(function () {
+            window.location.href = "signedUser.html";
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            
 
-                }).catch(function (error) {
-                    // Handle Errors here.
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    console.log(errorCode);
-                    console.log(errorMessage);
-                    // ...
-                });
-                // $("#inputUserName").val("");
-                //$("#inputEmail").val("");
-                //$("#inputPassword").val("");
-            }
         });
+        // $("#inputUserName").val("");
+        //$("#inputEmail").val("");
+        //$("#inputPassword").val("");
 
     });
 
@@ -415,7 +403,7 @@ $(document).ready(function () {
 
         auth.signInWithEmailAndPassword(emailInput, passwordInput).then(function () {
             window.location.href = "signedUser.html";
-            console.debug($.cookie("Email"));
+            //console.debug($.cookie("Email"));
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;

@@ -27,7 +27,7 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand text-white border border-info px-3" href="index.html">Rock My World</a>
         <form class="form-inline">
-            <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav">
+            <input type="text" class="mx-4 text-center p-1" placeholder="Artist, Bands or Location" id="inputUserNav" required>
             <input type="submit" class="submit btn btn-outline-info mr-4">
             <i class="far fa-heart text-white fa-lg"></i>
             <button class="btn btn-outline-success my-2 my-sm-0 mx-4" type="submit" id="signUpLink">Sign Up</button>
@@ -78,7 +78,7 @@
             <h2 class="text-white">Welcome to <em>Rock My World</em> where you can check the concert dates of your
                 favorite artists and bands! Search by Location or by Artist.</h2>
             <form class="search">
-                <input type="text" placeholder="Artist, Band or Location" id="inputUser">
+                <input type="text" placeholder="Artist, Band or Location" id="inputUser" required>
                 <input type="submit" class="btn btn-lg btn-primary btn-block my-2 submit">
             </form>
 
@@ -108,6 +108,7 @@
         <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4"></script>
     </div>
 
 
