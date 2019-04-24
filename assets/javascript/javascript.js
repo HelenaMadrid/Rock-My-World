@@ -143,25 +143,24 @@ $(document).ready(function () {
         var venueName = $("<p>");
         var location = $("<p>");
         var dateTime = $("<p>");
+        var imageDiv=$("<div>");
         eventId = results[y].id;
         //console.log(eventId);
 
         container.append(row);
-
-        row.append(imageConcert);
+        row.append(imageDiv);
         row.append(eventInfo);
         row.append(buttonAndHeart);
-
         eventInfo.append(eventName);
         eventInfo.append(venueName);
         eventInfo.append(location);
         eventInfo.append(dateTime);
-
+        imageDiv.append(imageConcert);
         buttonAndHeart.append(favorite);
-        //buttonAndHeart.append(heart);
         buttonAndHeart.append(extraInfoButton);
 
-        imageConcert.addClass("col-xl-3 py-4");
+        imageDiv.addClass("col-xl-3 my-4");
+        imageConcert.addClass("rounded mx-auto d-block .img-fluid");
         row.addClass("row text-center border border-white my-4 resultsRow");
         row.attr("value", eventId);
         eventInfo.addClass("col-xl-7 text-center p-2");
@@ -181,11 +180,7 @@ $(document).ready(function () {
         var imageConcertExtracted = results[y].images[2].url;
         var locationExtracted = cityExtracted + ", " + stateExtracted;
 
-
-
-        //imageConcert.attr({ "src": imageConcertExtracted, "style": "height:171px; width:240px;" });
-        imageConcert.attr({ "src": imageConcertExtracted, "style": "height:174px; width:262px;" });
-        //imageConcert.attr( "src", imageConcertExtracted);
+        imageConcert.attr({ "src": imageConcertExtracted, "style": "height:auto; max-width:100%;" });
 
         eventName.html("<h3>" + eventNameExtracted + "</h3>");
         venueName.text(venueNameExtracted);
