@@ -39,13 +39,27 @@ body{
   padding: 30px;
 }
 
+#emptySearch{
+  background-color: black;
+  opacity: .8;
+  margin-top: 15%;
+  margin-block-end: -15%;
+}
+
+.form-signup, .form-signin{
+  background-color: black;
+  opacity: .8;
+}
+#inputUserNav{
+  max-width: 330px;
+}
 
 #inputUser,
 .form-signup,
 .form-signin {
   width: 100%;
   max-width: 330px;
-  padding: 15px;
+  padding: 30px;
   margin: auto;
   margin-top: 15%;
 }
