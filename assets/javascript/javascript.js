@@ -161,10 +161,10 @@ $(document).ready(function () {
         //buttonAndHeart.append(heart);
         buttonAndHeart.append(extraInfoButton);
 
-        imageConcert.addClass("col-xl-2 p-4");
+        imageConcert.addClass("col-xl-3 py-4");
         row.addClass("row text-center border border-white my-4 resultsRow");
         row.attr("value", eventId);
-        eventInfo.addClass("col-xl-8 text-center p-2");
+        eventInfo.addClass("col-xl-7 text-center p-2");
         buttonAndHeart.addClass("col-xl-2 pt-5");
         extraInfoButton.addClass("btn btn-outline-light mt-4 moreInfo");
         extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%", "type": "button", "data-toggle": "modal", "data-target": ".bd-example-modal-lg" });
@@ -183,7 +183,9 @@ $(document).ready(function () {
 
 
 
-        imageConcert.attr({ "src": imageConcertExtracted, "style": "height:171px; width:240px;" });
+        //imageConcert.attr({ "src": imageConcertExtracted, "style": "height:171px; width:240px;" });
+        imageConcert.attr({ "src": imageConcertExtracted, "style": "height:174px; width:262px;" });
+        //imageConcert.attr( "src", imageConcertExtracted);
 
         eventName.html("<h3>" + eventNameExtracted + "</h3>");
         venueName.text(venueNameExtracted);
@@ -204,7 +206,8 @@ $(document).ready(function () {
         var artist2 = $("#inputUserNav").val().trim();
         var artist = $("#inputUser").val().trim();
         if (artist === "" & artist2 === "") {
-            $("#events").text("Dear user, please type something.");
+            $("#events").append("<h3 id='emptySearch'>Dear user, please type something.</h3>");
+            $("#events").removeAttr("hidden");
         }
         else {
             $(".containerSearch").attr("hidden", "true");
@@ -385,7 +388,6 @@ $(document).ready(function () {
                 var seatmap = $("<img>");
                 var ticketPrice = $("<p>");
                 var mapDiv = $("<div>");
-                var seatMapButton = $("<a>");
                 var latitude = response._embedded.venues[0].location.latitude;
                 var longitude = response._embedded.venues[0].location.longitude;
                 //var latitude = 39.305;
@@ -401,16 +403,16 @@ $(document).ready(function () {
                 bodyContainer.append(address);
                 bodyContainer.append(ticketPrice);
                 //bodyContainer.append(seatMapButton);
-                bodyContainer.append(seatmap);
-                bodyContainer.append(parking);
-                bodyContainer.append(notes);
                 bodyContainer.append(buyticket);
                 bodyContainer.append(itunes);
                 bodyContainer.append(youtube);
                 bodyContainer.append(instagram);
                 bodyContainer.append(facebook);
                 bodyContainer.append(lastfm);
-                bodyContainer.append(homepage);
+                bodyContainer.append(seatmap);
+                bodyContainer.append(parking);
+                bodyContainer.append(notes);
+                //bodyContainer.append(homepage);
                 bodyContainer.append(mapDiv);
 
                 mapDiv.attr("id", "map");
@@ -423,12 +425,12 @@ $(document).ready(function () {
                 parking.html("<strong>Parking Details</strong><p>" + response._embedded.venues[0].parkingDetail + "</p>");
                 notes.html("<strong>Please note</strong><p> " + response.pleaseNote + "</p>");
                 ticketPrice.html("<strong>Tickets</strong><p>$" + response.priceRanges[0].min + " - $" + response.priceRanges[0].max + " USD.</p>");
-                buyticket.text("Buy ticket");
-                itunes.text("iTunes");
-                youtube.html("<img src='assets/images/Youtube.svg' style='height:50px; width:50px'>");
-                instagram.html("<img src='assets/images/Instagram.svg' style='height:50px; width:50px'>");
-                facebook.html("<img src='assets/images/Facebook.svg' style='height:50px; width:50px'>");
-                lastfm.html("<img src='assets/images/LastFm.svg' style='height:50px; width:50px'>");
+                buyticket.html("<img src='assets/images/ticketmaster.png' class='m-2' style='height:50px; width:50px'>");
+                itunes.html("<img src='assets/images/itunes.png' class='m-2' style='height:50px; width:50px'>");
+                youtube.html("<img src='assets/images/Youtube.svg' class='m-2' style='height:50px; width:50px'>");
+                instagram.html("<img src='assets/images/Instagram.svg' class='m-2' style='height:50px; width:50px'>");
+                facebook.html("<img src='assets/images/Facebook.svg' class='m-2' style='height:50px; width:50px'>");
+                lastfm.html("<img src='assets/images/LastFm.svg'class='m-2' style='height:50px; width:50px'>");
                 homepage.text("homepage");
 
                 seatmap.addClass("m-2");
