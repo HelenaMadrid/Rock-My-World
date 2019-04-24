@@ -159,12 +159,12 @@ $(document).ready(function () {
         buttonAndHeart.append(favorite);
         buttonAndHeart.append(extraInfoButton);
 
-        imageDiv.addClass("col-xl-3 my-4");
+        imageDiv.addClass("col-xl-3 col-lg-3 col-md-5 my-4");
         imageConcert.addClass("rounded mx-auto d-block .img-fluid");
         row.addClass("row text-center border border-white my-4 resultsRow");
         row.attr("value", eventId);
-        eventInfo.addClass("col-xl-7 text-center p-2");
-        buttonAndHeart.addClass("col-xl-2 pt-5");
+        eventInfo.addClass("col-xl-7 col-md-7 text-center mt-3");
+        buttonAndHeart.addClass("col-xl-2 col-md-12 mt-xl-5 mt-lg-5 mt-md-3");
         extraInfoButton.addClass("btn btn-outline-light mt-4 moreInfo");
         extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%", "type": "button", "data-toggle": "modal", "data-target": ".bd-example-modal-lg" });
         heart.addClass("far fa-heart text-white fa-lg");
@@ -275,6 +275,7 @@ $(document).ready(function () {
                 $(".search").attr("hidden", "true");
                 $(".containerSearch").attr("hidden", "true");
                 $("#events").attr("hidden", "true");
+                $(".form-signin").attr("hidden", "true");
 
 
                 //database.ref("users/" + userSignedIn.displayName+"/Lady Gaga").on("child_added", function (snapshot) {
@@ -307,6 +308,7 @@ $(document).ready(function () {
                 $(".search").attr("hidden", "true");
                 $(".containerSearch").attr("hidden", "true");
                 $("#events").attr("hidden", "true");
+                $(".form-signin").attr("hidden", "true");
                 $("#printSavedEvents").html("<h2 class='text-white noNavBar signInNeeded'>You need to log in to check the events you saved.</h2>");
             }
         });
@@ -316,40 +318,52 @@ $(document).ready(function () {
 
     //$(".favorite").off();
     //$(document.body).off();
-    $(document.body).off("click", ".favorite");
-    $(document.body).on("click", ".favorite", function favorite(event) {
+    
+    //$(".favorite").off("click");
+    $(document.body).on("click", ".favorite", function (event) {
         event.preventDefault();
         var eventId = $(this).attr("value");
         console.log(this);
         console.log(eventId);
 
-        if (saved === false) {
-            $(this).children().removeClass("far");
-            $(this).children().addClass("fas");
-            saved = true;
-            console.log("favorite saved");
-            var userSignedIn = auth.currentUser;
-            var currentUserEmail = userSignedIn.email;
-            console.log(currentUserEmail);
-            database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).push({
-                EventID: eventId
-            });
-        }
-        else {
-            var userSignedIn = auth.currentUser;
-            console.log(userSignedIn);
-            $(this).children().removeClass("fas");
-            $(this).children().addClass("far");
-            saved = false;
-            //database.ref("users/"+ userSignedIn.displayName.eventId).remove();
-            database.ref("users/" + userSignedIn.displayName).child($(this).attr("value")).remove();
-            // database.ref("TrainScheduler").child($(this).attr("data-id")).remove();
-            console.log("favorite unsaved");
-        }
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              // User is signed in.
+              if (saved === false) {
+                $(this).children().removeClass("far");
+                $(this).children().addClass("fas");
+                saved = true;
+                console.log("favorite saved");
+                var userSignedIn = auth.currentUser;
+                var currentUserEmail = userSignedIn.email;
+                console.log(currentUserEmail);
+                database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).push({
+                    EventID: eventId
+                });
+            }
+            else {
+                var userSignedIn = auth.currentUser;
+                console.log(userSignedIn);
+                $(this).children().removeClass("fas");
+                $(this).children().addClass("far");
+                saved = false;
+                //database.ref("users/"+ userSignedIn.displayName.eventId).remove();
+                database.ref("users/" + userSignedIn.displayName).child($(this).attr("value")).remove();
+                // database.ref("TrainScheduler").child($(this).attr("data-id")).remove();
+                console.log("favorite unsaved");
+            }
+            } else {
+              // No user is signed in.
+              $("#printSavedEvents").html("<h2 class='text-white noUser'>You need to log in to check the events you saved.</h2>");
+              $("#printSavedEvents").removeAttr("hidden");
+            }
+          });
+
 
 
 
     });
+
 
     //$().off();
     $(document.body).on("click", ".moreInfo", function (event) {
@@ -428,9 +442,10 @@ $(document).ready(function () {
                 lastfm.html("<img src='assets/images/LastFm.svg'class='m-2' style='height:50px; width:50px'>");
                 homepage.text("homepage");
 
-                seatmap.addClass("m-2");
-                seatmap.attr("src", response.seatmap.staticUrl);
-                imageEvent.attr("src", response.images[1].url);
+                seatmap.addClass("rounded mx-auto d-block .img-fluid my-2");
+                seatmap.attr({"src": response.seatmap.staticUrl, "style":"height:auto; max-width:100%"});
+                imageEvent.attr({"src": response.images[1].url, "style":"height:auto; max-width:100%"});
+                imageEvent.addClass("rounded mx-auto d-block .img-fluid my-2");
                 buyticket.attr({ "href": response.url, "target": "_blank" });
                 itunes.attr({ "href": response._embedded.attractions[0].externalLinks.itunes[0].url, "target": "_blank" });
                 youtube.attr({ "href": response._embedded.attractions[0].externalLinks.youtube[0].url, "target": "_blank" });
