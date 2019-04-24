@@ -143,7 +143,7 @@ $(document).ready(function () {
         var venueName = $("<p>");
         var location = $("<p>");
         var dateTime = $("<p>");
-        var imageDiv=$("<div>");
+        var imageDiv = $("<div>");
         eventId = results[y].id;
         //console.log(eventId);
 
@@ -318,7 +318,7 @@ $(document).ready(function () {
 
     //$(".favorite").off();
     //$(document.body).off();
-    
+
     //$(".favorite").off("click");
     $(document.body).on("click", ".favorite", function (event) {
         event.preventDefault();
@@ -326,42 +326,27 @@ $(document).ready(function () {
         console.log(this);
         console.log(eventId);
 
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-              // User is signed in.
-              if (saved === false) {
-                $(this).children().removeClass("far");
-                $(this).children().addClass("fas");
-                saved = true;
-                console.log("favorite saved");
-                var userSignedIn = auth.currentUser;
-                var currentUserEmail = userSignedIn.email;
-                console.log(currentUserEmail);
-                database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).push({
-                    EventID: eventId
-                });
-            }
-            else {
-                var userSignedIn = auth.currentUser;
-                console.log(userSignedIn);
-                $(this).children().removeClass("fas");
-                $(this).children().addClass("far");
-                saved = false;
-                //database.ref("users/"+ userSignedIn.displayName.eventId).remove();
-                database.ref("users/" + userSignedIn.displayName).child($(this).attr("value")).remove();
-                // database.ref("TrainScheduler").child($(this).attr("data-id")).remove();
-                console.log("favorite unsaved");
-            }
-            } else {
-              // No user is signed in.
-              $("#printSavedEvents").html("<h2 class='text-white noUser'>You need to log in to check the events you saved.</h2>");
-              $("#printSavedEvents").removeAttr("hidden");
-            }
-          });
-
-
-
-
+        if (saved === false) {
+            $(this).children().removeClass("far");
+            $(this).children().addClass("fas");
+            saved = true;
+            console.log("favorite saved");
+            var userSignedIn = auth.currentUser;
+            database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).push({
+                EventID: eventId
+            });
+        }
+        else {
+            var userSignedIn = auth.currentUser;
+            console.log(userSignedIn);
+            $(this).children().removeClass("fas");
+            $(this).children().addClass("far");
+            saved = false;
+            //database.ref("users/"+ userSignedIn.displayName.eventId).remove();
+            database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).child(eventId).remove();
+            // database.ref("TrainScheduler").child($(this).attr("data-id")).remove();
+            console.log("favorite unsaved");
+        }
     });
 
 
@@ -443,8 +428,8 @@ $(document).ready(function () {
                 homepage.text("homepage");
 
                 seatmap.addClass("rounded mx-auto d-block .img-fluid my-2");
-                seatmap.attr({"src": response.seatmap.staticUrl, "style":"height:auto; max-width:100%"});
-                imageEvent.attr({"src": response.images[1].url, "style":"height:auto; max-width:100%"});
+                seatmap.attr({ "src": response.seatmap.staticUrl, "style": "height:auto; max-width:100%" });
+                imageEvent.attr({ "src": response.images[1].url, "style": "height:auto; max-width:100%" });
                 imageEvent.addClass("rounded mx-auto d-block .img-fluid my-2");
                 buyticket.attr({ "href": response.url, "target": "_blank" });
                 itunes.attr({ "href": response._embedded.attractions[0].externalLinks.itunes[0].url, "target": "_blank" });
