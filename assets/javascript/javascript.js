@@ -25,8 +25,6 @@ $(document).ready(function () {
     var findUserKey = "";
     var emailPassword = false;
     var APIKEYTicketmaster = "Hc1CDHMvFbPBf3t8PaoGyuzOfvyTLPts";
-    var artist = "";
-    var artist2 = "";
     var artistfinal = "";
     var saved = false;
     var mapsAPIKEY = "AIzaSyAlrquPmGfxKhaYwfzdeFVpnVxB-875Lc4";
@@ -164,7 +162,7 @@ $(document).ready(function () {
         buttonAndHeart.append(extraInfoButton);
 
         imageConcert.addClass("col-xl-2 p-4");
-        row.addClass("row text-center border border-white my-2");
+        row.addClass("row text-center border border-white my-4 resultsRow");
         row.attr("value", eventId);
         eventInfo.addClass("col-xl-8 text-center p-2");
         buttonAndHeart.addClass("col-xl-2 pt-5");
@@ -177,9 +175,13 @@ $(document).ready(function () {
 
         var eventNameExtracted = results[y].name;
         var venueNameExtracted = results[y]._embedded.venues[0].name;
-        var locationExtracted = results[y]._embedded.venues[0].city.name + ", " + results[y]._embedded.venues[0].state.name;
+        var cityExtracted = results[y]._embedded.venues[0].city.name;
+        var stateExtracted = results[y]._embedded.venues[0].state.name;
         var dateTimeExtracted = results[y].dates.start.localDate + " " + results[y].dates.start.localTime;
         var imageConcertExtracted = results[y].images[2].url;
+        var locationExtracted = cityExtracted + ", " + stateExtracted;
+
+
 
         imageConcert.attr({ "src": imageConcertExtracted, "style": "height:171px; width:240px;" });
 
@@ -195,48 +197,67 @@ $(document).ready(function () {
     $(".submit").on("click", function (event) {
         $("#events").empty();
         event.preventDefault();
-        artist2 = $("#inputUserNav").val().trim();
-        artist = $("#inputUser").val().trim();
+        $("#printSavedEvents").attr("hidden", "true");
+        $(".form-signin").attr("hidden", "true");
+        $(".form-signup").attr("hidden", "true");
+
+        var artist2 = $("#inputUserNav").val().trim();
+        var artist = $("#inputUser").val().trim();
         if (artist === "" & artist2 === "") {
             $("#events").text("Dear user, please type something.");
         }
         else {
             $(".containerSearch").attr("hidden", "true");
+            $("#events").removeAttr("hidden");
+            $("#printSavedEvents").attr("hidden", "true");
             console.log("artist " + artist);
             console.log(artist2);
             if (artist2 === "") {
                 artistfinal = artist;
+                //artist = "";
             }
             if (artist === "") {
                 artistfinal = artist2;
+                //artist2 = "";
             }
-            artist = "";
-            artist2 = "";
+
+            $("#inputUserNav").val("");
+            $("#inputUser").val("");
+
+            console.log("artist " + artist);
+            console.log(artist2);
             //Now that we have the artistId, we look in events for all the events that have the artistid, this is to ensure that no cover bands to not show in the search. So here we find the eventID. We are limiting the results for 10 events.
             $.ajax({
                 type: "GET",
-                url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&keyword=" + artistfinal,
+                url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&source=ticketmaster&keyword=" + artistfinal,
                 async: true,
                 dataType: "json",
                 success: function (response) {
-                    //console.log(response);
-                    var results = response._embedded.events;
-                    var container = $("#events");
-                    container.addClass("container");
-
-                    if (results.length < 10) {
-                        for (var y = 0; y < results.length; y++) {
-                            printEvents(results, y, container);
-                        }
+                    console.log(response);
+                    if (response.page.totalElements === 0) {
+                        $("#events").append("<h2 class='text-white noNavBar noEventsFound'>Sorry, but we couldn't find any events by this artist or at this location. Please try finding other artist or location.");
                     }
                     else {
-                        for (var y = 0; y < 10; y++) {
-                            printEvents(results, y, container);
+                        var results = response._embedded.events;
+                        var container = $("#events");
+                        container.addClass("container");
+
+
+                        if (results.length < 10) {
+                            for (var y = 0; y < results.length; y++) {
+                                printEvents(results, y, container);
+                            }
+                        }
+                        else {
+                            for (var y = 0; y < 10; y++) {
+                                printEvents(results, y, container);
+                            }
                         }
                     }
                 },
                 error: function (xhr, status, err) {
                     // This time, we do not end up here!
+
                 }
             });
         }
@@ -245,48 +266,60 @@ $(document).ready(function () {
     $("#favoritesPage").off();
     $("#favoritesPage").on("click", function (event) {
         event.preventDefault();
-        //window.location.href = "favorites.html";
-        var dropdown = $("#dropdown");
-        var userSignedIn = auth.currentUser;
-        $("#dropdown").removeAttr("hidden");
-        $("#printSavedEvents").removeAttr("hidden");
-        $(".form-signup").attr("hidden", "true");
-        $(".search").attr("hidden", "true");
-        $(".containerSearch").attr("hidden", "true");
-        $("#events").attr("hidden", "true");
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // User is signed in.
+                var dropdown = $("#dropdown");
+                var userSignedIn = auth.currentUser;
+                $("#dropdown").removeAttr("hidden");
+                $("#printSavedEvents").removeAttr("hidden");
+                $(".form-signup").attr("hidden", "true");
+                $(".search").attr("hidden", "true");
+                $(".containerSearch").attr("hidden", "true");
+                $("#events").attr("hidden", "true");
 
 
-        //database.ref("users/" + userSignedIn.displayName+"/Lady Gaga").on("child_added", function (snapshot) {
-        database.ref("users/" + userSignedIn.displayName).orderByKey().once("value").then(function (snapshot) {
-            var haschildren = snapshot.hasChildren();
-            var numchildren = snapshot.numChildren();
+                //database.ref("users/" + userSignedIn.displayName+"/Lady Gaga").on("child_added", function (snapshot) {
+                database.ref("users/" + userSignedIn.displayName).orderByKey().once("value").then(function (snapshot) {
+                    var haschildren = snapshot.hasChildren();
+                    var numchildren = snapshot.numChildren();
 
-            console.log(snapshot);
-            console.log(haschildren);
-            console.log(numchildren);
+                    console.log(snapshot);
+                    console.log(haschildren);
+                    console.log(numchildren);
 
-            snapshot.forEach(function (childSnapshot) {
-                console.log(childSnapshot.key);
-                console.log(childSnapshot.val());
-                var option = $("<option>");
-                var artist = childSnapshot.key;
-                dropdown.append(option);
+                    snapshot.forEach(function (childSnapshot) {
+                        console.log(childSnapshot.key);
+                        console.log(childSnapshot.val());
+                        var option = $("<option>");
+                        var artist = childSnapshot.key;
+                        dropdown.append(option);
 
-                option.text(artist);
+                        option.text(artist);
+                        option.attr("value", artist);
 
 
-            });
+                    });
 
+                });
+            } else {
+                // No user is signed in.
+                $("#printSavedEvents").removeAttr("hidden");
+                $(".form-signup").attr("hidden", "true");
+                $(".search").attr("hidden", "true");
+                $(".containerSearch").attr("hidden", "true");
+                $("#events").attr("hidden", "true");
+                $("#printSavedEvents").html("<h2 class='text-white noNavBar signInNeeded'>You need to log in to check the events you saved.</h2>");
+            }
         });
 
+
     });
-
-
 
     //$(".favorite").off();
     //$(document.body).off();
     $(document.body).off("click", ".favorite");
-    $(document.body).on("click", ".favorite", function (event) {
+    $(document.body).on("click", ".favorite", function favorite(event) {
         event.preventDefault();
         var eventId = $(this).attr("value");
         console.log(this);
@@ -434,6 +467,7 @@ $(document).ready(function () {
             $(".search").attr("hidden", "true");
             $(".containerSearch").attr("hidden", "true");
             $("#events").attr("hidden", "true");
+            $("#printSavedEvents").attr("hidden", "true");
         }
         else {
             $(".form-signin").attr("hidden", "true");
@@ -441,6 +475,7 @@ $(document).ready(function () {
             $(".form-signup").removeAttr("hidden");
             $(".containerSearch").attr("hidden", "true");
             $("#events").attr("hidden", "true");
+            $("#printSavedEvents").attr("hidden", "true");
         }
     });
 
@@ -452,6 +487,7 @@ $(document).ready(function () {
             $(".search").attr("hidden", "true");
             $(".containerSearch").attr("hidden", "true");
             $("#events").attr("hidden", "true");
+            $("#printSavedEvents").attr("hidden", "true");
         }
         else {
             $(".form-signup").attr("hidden", "true");
@@ -459,6 +495,7 @@ $(document).ready(function () {
             $(".form-signin").removeAttr("hidden");
             $(".containerSearch").attr("hidden", "true");
             $("#events").attr("hidden", "true");
+            $("#printSavedEvents").attr("hidden", "true");
 
         }
     });

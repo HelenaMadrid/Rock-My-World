@@ -19,7 +19,7 @@ body{
     
 }
 .noNavBar{
-  padding-top: 20%;
+  margin-top: 15%;
 }
 
 .search{
@@ -28,6 +28,17 @@ body{
   padding: 15px;
   margin: auto;
 }
+
+.signInNeeded, .noEventsFound{
+  margin-top: 30%;
+}
+
+.resultsRow, .signInNeeded, .mainSearch, .noEventsFound{
+  background-color: black;
+  opacity: .8;
+  padding: 30px;
+}
+
 
 #inputUser,
 .form-signup,
