@@ -150,7 +150,6 @@ $(document).ready(function () {
         var dateTime = $("<p>");
         var imageDiv = $("<div>");
         eventId = results[y].id;
-        //console.log(eventId);
 
         container.append(row);
         row.append(imageDiv);
@@ -269,8 +268,10 @@ $(document).ready(function () {
     $(".dropdown").off();
     $(".dropdown").on("change", function (event) {
         event.preventDefault();
-        var artistSelected=$(this).children("option:selected").val();
+        $("#events").removeAttr("hidden");
+        var artistSelected = $(this).children("option:selected").val();
         console.log(artistSelected);
+        var userSignedIn = auth.currentUser;
         $.ajax({
             type: "GET",
             url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&source=ticketmaster&countryCode=US&keyword=" + artistSelected,
@@ -281,13 +282,85 @@ $(document).ready(function () {
                 var results = response._embedded.events;
                 var container = $("#events");
                 container.addClass("container");
-                
-                results.forEach(function(element){
+
+                results.forEach(function (element) {
                     console.log(element);
-                    var eventIdExtracted=element.id;
+                    var eventIdExtracted = element.id;
                     console.log(eventIdExtracted);
+
+                    database.ref("users/" + userSignedIn.displayName + "/" + artistSelected).orderByKey().once("value").then(function (snapshot) {
+                        snapshot.forEach(function (childSnapshot) {
+                            console.log(childSnapshot.key);
+                            console.log(childSnapshot.val());
+                            console.log(childSnapshot.val().EventID);
+                            var eventIdFirebase = childSnapshot.val().EventID;
+
+                            if (eventIdExtracted === eventIdFirebase) {
+                                console.log(eventIdExtracted + " matched " + childSnapshot.val());
+
+                                var row = $("<div>");
+                                var eventInfo = $("<div>");
+                                var buttonAndHeart = $("<form>");
+                                var heart = $("<i>");
+                                var favorite = $("<button>");
+                                var extraInfoButton = $("<button>");
+                                var imageConcert = $("<img>");
+                                var eventName = $("<p>");
+                                var venueName = $("<p>");
+                                var location = $("<p>");
+                                var dateTime = $("<p>");
+                                var imageDiv = $("<div>");
+                                eventId = eventIdFirebase;
+
+                                container.append(row);
+                                row.append(imageDiv);
+                                row.append(eventInfo);
+                                row.append(buttonAndHeart);
+                                eventInfo.append(eventName);
+                                eventInfo.append(venueName);
+                                eventInfo.append(location);
+                                eventInfo.append(dateTime);
+                                imageDiv.append(imageConcert);
+                                buttonAndHeart.append(favorite);
+                                buttonAndHeart.append(extraInfoButton);
+
+                                imageDiv.addClass("col-xl-3 col-lg-3 col-md-5 my-4");
+                                imageConcert.addClass("rounded mx-auto d-block .img-fluid");
+                                row.addClass("row text-center border border-white my-4 resultsRow");
+                                row.attr("value", eventId);
+                                eventInfo.addClass("col-xl-7 col-md-7 text-center mt-3");
+                                buttonAndHeart.addClass("col-xl-2 col-md-12 mt-xl-5 mt-lg-5 mt-md-3");
+                                extraInfoButton.addClass("btn btn-outline-light mt-4 moreInfo");
+                                extraInfoButton.attr({ "value": eventId, "style": "height:auto; width:100%", "type": "button", "data-toggle": "modal", "data-target": ".bd-example-modal-lg" });
+                                heart.addClass("far fa-heart text-white fa-lg");
+                                heart.attr({ "style": "width:100%", "value": eventId });
+                                favorite.attr({ "style": "background:none; border:none", "value": eventId, "type": "button" });
+                                favorite.addClass("favorite " + artistfinal);
+
+                                var eventNameExtracted = element.name;
+                                var venueNameExtracted = element._embedded.venues[0].name;
+                                var cityExtracted = element._embedded.venues[0].city.name;
+                                var stateExtracted = element._embedded.venues[0].state.name;
+                                var dateTimeExtracted = element.dates.start.localDate + " " + element.dates.start.localTime;
+                                var imageConcertExtracted = element.images[2].url;
+                                var locationExtracted = cityExtracted + ", " + stateExtracted;
+
+                                imageConcert.attr({ "src": imageConcertExtracted, "style": "height:auto; max-width:100%;" });
+
+                                eventName.html("<h3>" + eventNameExtracted + "</h3>");
+                                venueName.text(venueNameExtracted);
+                                location.text(locationExtracted);
+                                dateTime.text(dateTimeExtracted);
+                                extraInfoButton.text("More information");
+                                favorite.html(heart);
+
+
+                            }
+                        });
+
+                    });
                 })
-                
+
             },
             error: function (xhr, status, err) {
                 // This time, we do not end up here!
