@@ -269,6 +269,7 @@ $(document).ready(function () {
     $(".dropdown").off();
     $(".dropdown").on("change", function (event) {
         event.preventDefault();
+        $("#events").empty();
         $("#events").removeAttr("hidden");
         var artistSelected = $(this).children("option:selected").val();
         console.log(artistSelected);
