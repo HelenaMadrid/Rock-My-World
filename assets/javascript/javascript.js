@@ -424,7 +424,7 @@ $(document).ready(function () {
                 youtube.html("<img src='assets/images/Youtube.svg' class='m-2' style='height:50px; width:50px'>");
                 instagram.html("<img src='assets/images/Instagram.svg' class='m-2' style='height:50px; width:50px'>");
                 facebook.html("<img src='assets/images/Facebook.svg' class='m-2' style='height:50px; width:50px'>");
-                lastfm.html("<img src='assets/images/LastFm.svg'class='m-2' style='height:50px; width:50px'>");
+                lastfm.html("<img src='assets/images/LastFM.svg'class='m-2' style='height:50px; width:50px'>");
                 homepage.text("homepage");
 
                 seatmap.addClass("rounded mx-auto d-block .img-fluid my-2");
