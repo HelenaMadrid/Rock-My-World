@@ -47,33 +47,38 @@ $(document).ready(function () {
     auth.onAuthStateChanged(function (user) {
         if (user) {
             console.log(user + " signed in");
-            console.log(nameUser);
-            //updateProfile();
-            if (user) {
-                console.log(user);
-                console.log(user.uid);
-                var named, email, uid;
-                if (user != null) {
-                    named = user.displayName;
-                    email = user.email;
-                    uid = user.uid;
-                    console.log("name " + named);
-                    console.log("name displayed" + user.displayName);
-                    console.log("email " + email);
-                    console.log("uid " + uid);
-                    $("#hiUser").html("Welcome <strong>" + user.displayName + "</strong>");
-
-                    //console.log(user);
-                }
-            } else {
-                // No user is signed in.
-                //console.log(userSignedIn);
+            console.log(user.uid);
+            var named, email, uid;
+            var locations=$(location).attr('href');
+            console.log($(location).attr('href'));
+            if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/index.html") {
+                window.location.href = "signedUser.html";
             }
-
+            else {
+                console.log("You are signed in, therefore you are in signedUser.html");
+            }
+            if (user != null) {
+                named = user.displayName;
+                email = user.email;
+                uid = user.uid;
+                console.log("name " + named);
+                console.log("name displayed" + user.displayName);
+                console.log("email " + email);
+                console.log("uid " + uid);
+                $("#hiUser").html("Welcome <strong>" + user.displayName + "!</strong>");
+            }
         }
         else {
             // No user is signed in.
             console.log("no user");
+            console.log($(location).attr('href'));
+            $("#hiUser").text("Welcome");
+            if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/signedUser.html") {
+                window.location.href = "index.html";
+            }
+            else {
+                console.log("You are not signed in, therefore you are in index.html");
+            }
         }
     });
 
@@ -316,10 +321,6 @@ $(document).ready(function () {
 
     });
 
-    //$(".favorite").off();
-    //$(document.body).off();
-
-    //$(".favorite").off("click");
     $(document.body).on("click", ".favorite", function (event) {
         event.preventDefault();
         var eventId = $(this).attr("value");
@@ -349,8 +350,6 @@ $(document).ready(function () {
         }
     });
 
-
-    //$().off();
     $(document.body).on("click", ".moreInfo", function (event) {
         $(".modal-title").empty();
         $(".modal-body").empty();
