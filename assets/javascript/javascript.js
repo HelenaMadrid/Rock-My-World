@@ -49,7 +49,7 @@ $(document).ready(function () {
             console.log(user + " signed in");
             console.log(user.uid);
             var named, email, uid;
-            var locations=$(location).attr('href');
+            var locations = $(location).attr('href');
             console.log($(location).attr('href'));
             if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/index.html") {
                 window.location.href = "signedUser.html";
@@ -266,22 +266,54 @@ $(document).ready(function () {
         }
     });
 
+    $(".dropdown").off();
+    $(".dropdown").on("change", function (event) {
+        event.preventDefault();
+        var artistSelected=$(this).children("option:selected").val();
+        console.log(artistSelected);
+        $.ajax({
+            type: "GET",
+            url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&source=ticketmaster&countryCode=US&keyword=" + artistSelected,
+            async: true,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                var results = response._embedded.events;
+                var container = $("#events");
+                container.addClass("container");
+                
+                results.forEach(function(element){
+                    console.log(element);
+                    var eventIdExtracted=element.id;
+                    console.log(eventIdExtracted);
+                })
+                
+            },
+            error: function (xhr, status, err) {
+                // This time, we do not end up here!
+
+            }
+        });
+
+    });
+
+
     $("#favoritesPage").off();
     $("#favoritesPage").on("click", function (event) {
         event.preventDefault();
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 // User is signed in.
-                var dropdown = $("#dropdown");
+                var dropdown = $(".dropdown");
+                dropdown.empty();
                 var userSignedIn = auth.currentUser;
-                $("#dropdown").removeAttr("hidden");
+                $("#dropdown-form").removeAttr("hidden");
                 $("#printSavedEvents").removeAttr("hidden");
                 $(".form-signup").attr("hidden", "true");
                 $(".search").attr("hidden", "true");
                 $(".containerSearch").attr("hidden", "true");
                 $("#events").attr("hidden", "true");
                 $(".form-signin").attr("hidden", "true");
-
 
                 //database.ref("users/" + userSignedIn.displayName+"/Lady Gaga").on("child_added", function (snapshot) {
                 database.ref("users/" + userSignedIn.displayName).orderByKey().once("value").then(function (snapshot) {
@@ -301,8 +333,6 @@ $(document).ready(function () {
 
                         option.text(artist);
                         option.attr("value", artist);
-
-
                     });
 
                 });
@@ -323,7 +353,7 @@ $(document).ready(function () {
 
     $(document.body).on("click", ".favorite", function (event) {
         event.preventDefault();
-        var clicked=$(this);
+        var clicked = $(this);
         var eventId = clicked.attr("value");
         console.log(this);
         console.log(eventId);
@@ -336,22 +366,22 @@ $(document).ready(function () {
             var userSignedIn = auth.currentUser;
             database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).push({
                 EventID: eventId
-            }).then(function(snap){
-                var keyCreated=snap.key;
+            }).then(function (snap) {
+                var keyCreated = snap.key;
                 console.log(keyCreated);
                 clicked.attr("key", keyCreated);
             });
-            
+
         }
         else {
             var userSignedIn = auth.currentUser;
-            var key=clicked.attr("key");
+            var key = clicked.attr("key");
             console.log(userSignedIn);
             $(this).children().removeClass("fas");
             $(this).children().addClass("far");
             saved = false;
             //database.ref("users/"+ userSignedIn.displayName.eventId).remove();
-            database.ref("users/" + userSignedIn.displayName + "/" + artistfinal+"/"+key).remove();
+            database.ref("users/" + userSignedIn.displayName + "/" + artistfinal + "/" + key).remove();
             // database.ref("TrainScheduler").child($(this).attr("data-id")).remove();
             console.log("favorite unsaved");
         }
