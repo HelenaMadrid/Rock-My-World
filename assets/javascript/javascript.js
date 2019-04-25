@@ -52,12 +52,7 @@ $(document).ready(function () {
             var named, email, uid;
             var locations = $(location).attr('href');
             console.log($(location).attr('href'));
-            //if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/index.html") {
-            //  window.location.href = "https://helenamadrid.github.io/Rock-My-World/signedUser.html";
-            //}
-            //else {
-            //  console.log("You are signed in, therefore you are in signedUser.html");
-            //}
+
             if (user != null) {
                 named = user.displayName;
                 email = user.email;
@@ -67,6 +62,12 @@ $(document).ready(function () {
                 console.log("email " + email);
                 console.log("uid " + uid);
                 $("#hiUser").html("Welcome <strong>" + user.displayName + "!</strong>");
+                if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/index.html") {
+                    window.location.href = "https://helenamadrid.github.io/Rock-My-World/signedUser.html";
+                }
+                else {
+                    console.log("You are signed in, therefore you are in signedUser.html");
+                }
             }
         }
         else {
@@ -74,12 +75,12 @@ $(document).ready(function () {
             console.log("no user");
             console.log($(location).attr('href'));
             $("#hiUser").text("Welcome");
-            //if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/signedUser.html") {
-            //  window.location.href = "https://helenamadrid.github.io/Rock-My-World/index.html";
-            //}
-            // else {
-            //  console.log("You are not signed in, therefore you are in index.html");
-            //  }
+            if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/signedUser.html") {
+                window.location.href = "https://helenamadrid.github.io/Rock-My-World/index.html";
+            }
+            else {
+                console.log("You are not signed in, therefore you are in index.html");
+            }
         }
     });
 
