@@ -232,7 +232,7 @@ $(document).ready(function () {
             //Now that we have the artistId, we look in events for all the events that have the artistid, this is to ensure that no cover bands to not show in the search. So here we find the eventID. We are limiting the results for 10 events.
             $.ajax({
                 type: "GET",
-                url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&source=ticketmaster&keyword=" + artistfinal,
+                url: "https://app.ticketmaster.com/discovery/v2/events.json?size=10&apikey=ZZCv9QiTrhtUYkyoww2oLH1fMUUX6Zwc&sort=date,asc&source=ticketmaster&countryCode=US&keyword=" + artistfinal,
                 async: true,
                 dataType: "json",
                 success: function (response) {
@@ -323,7 +323,8 @@ $(document).ready(function () {
 
     $(document.body).on("click", ".favorite", function (event) {
         event.preventDefault();
-        var eventId = $(this).attr("value");
+        var clicked=$(this);
+        var eventId = clicked.attr("value");
         console.log(this);
         console.log(eventId);
 
@@ -335,16 +336,22 @@ $(document).ready(function () {
             var userSignedIn = auth.currentUser;
             database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).push({
                 EventID: eventId
+            }).then(function(snap){
+                var keyCreated=snap.key;
+                console.log(keyCreated);
+                clicked.attr("key", keyCreated);
             });
+            
         }
         else {
             var userSignedIn = auth.currentUser;
+            var key=clicked.attr("key");
             console.log(userSignedIn);
             $(this).children().removeClass("fas");
             $(this).children().addClass("far");
             saved = false;
             //database.ref("users/"+ userSignedIn.displayName.eventId).remove();
-            database.ref("users/" + userSignedIn.displayName + "/" + artistfinal).child(eventId).remove();
+            database.ref("users/" + userSignedIn.displayName + "/" + artistfinal+"/"+key).remove();
             // database.ref("TrainScheduler").child($(this).attr("data-id")).remove();
             console.log("favorite unsaved");
         }
