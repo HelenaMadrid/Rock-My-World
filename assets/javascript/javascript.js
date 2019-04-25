@@ -37,7 +37,7 @@ $(document).ready(function () {
             displayName: nameUser
         }).then(function () {
             // Update successful.
-            window.location.href = "signedUser.html";
+            window.location.href = "https://helenamadrid.github.io/Rock-My-World/signedUser.html";
 
         }).catch(function (error) {
             // An error happened.
@@ -52,7 +52,7 @@ $(document).ready(function () {
             var locations = $(location).attr('href');
             console.log($(location).attr('href'));
             if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/index.html") {
-                window.location.href = "signedUser.html";
+                window.location.href = "https://helenamadrid.github.io/Rock-My-World/signedUser.html";
             }
             else {
                 console.log("You are signed in, therefore you are in signedUser.html");
@@ -74,7 +74,7 @@ $(document).ready(function () {
             console.log($(location).attr('href'));
             $("#hiUser").text("Welcome");
             if ($(location).attr('href') === "https://helenamadrid.github.io/Rock-My-World/signedUser.html") {
-                window.location.href = "index.html";
+                window.location.href = "https://helenamadrid.github.io/Rock-My-World/index.html";
             }
             else {
                 console.log("You are not signed in, therefore you are in index.html");
@@ -123,7 +123,7 @@ $(document).ready(function () {
         }
 
         auth.signInWithEmailAndPassword(emailInput, passwordInput).then(function () {
-            window.location.href = "signedUser.html";
+            window.location.href = "https://helenamadrid.github.io/Rock-My-World/signedUser.html";
             //console.debug($.cookie("Email"));
         }).catch(function (error) {
             // Handle Errors here.
@@ -609,7 +609,7 @@ $(document).ready(function () {
     $("#signOutLink").on("click", function (event) {
         event.preventDefault();
         auth.signOut().then(function () {
-            window.location.href = "index.html";
+            window.location.href = "https://helenamadrid.github.io/Rock-My-World/index.html";
             // Sign-out successful.
         }).catch(function (error) {
             // An error happened.
